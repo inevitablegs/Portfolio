@@ -2,13 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
-export default function Login() {
+export default function AdminLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const login = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -18,33 +18,29 @@ export default function Login() {
         password,
       });
 
-      // store tokens
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
 
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Invalid username or password");
+      navigate("/admin/dashboard");
+    } catch {
+      setError("Invalid credentials");
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "100px auto" }}>
-      <h2>Login</h2>
+    <div style={{ maxWidth: "350px", margin: "100px auto" }}>
+      <h2>Admin Login</h2>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={login}>
         <input
-          type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
         />
-
         <br /><br />
-
         <input
           type="password"
           placeholder="Password"
@@ -52,9 +48,7 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-
         <br /><br />
-
         <button type="submit">Login</button>
       </form>
     </div>
