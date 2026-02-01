@@ -21,35 +21,44 @@ export default function AdminLogin() {
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
 
+      // test admin access
+      await api.get("/admin/dashboard/");
+
       navigate("/admin/dashboard");
     } catch {
-      setError("Invalid credentials");
+      localStorage.clear();
+      setError("Not authorized as admin");
     }
   };
 
   return (
-    <div style={{ maxWidth: "350px", margin: "100px auto" }}>
-      <h2>Admin Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <form
+        onSubmit={login}
+        className="bg-white p-6 rounded-lg border w-80"
+      >
+        <h2 className="text-lg font-semibold mb-4">Admin Login</h2>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p className="text-red-600 text-sm">{error}</p>}
 
-      <form onSubmit={login}>
         <input
+          className="w-full border p-2 mb-3"
           placeholder="Username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
+          onChange={e => setUsername(e.target.value)}
         />
-        <br /><br />
+
         <input
+          className="w-full border p-2 mb-3"
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          onChange={e => setPassword(e.target.value)}
         />
-        <br /><br />
-        <button type="submit">Login</button>
+
+        <button className="w-full bg-black text-white py-2">
+          Login
+        </button>
       </form>
     </div>
   );
