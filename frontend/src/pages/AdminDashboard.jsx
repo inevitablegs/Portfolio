@@ -7,11 +7,10 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get("/admin/dashboard/")
-      .catch(() => {
-        localStorage.clear();
-        navigate("/");
-      });
+    api.get("/admin/dashboard/").catch(() => {
+      localStorage.clear();
+      navigate("/");
+    });
   }, []);
 
   const logout = () => {
@@ -22,7 +21,6 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen p-8 bg-gray-100">
       <div className="max-w-3xl mx-auto bg-white border rounded-lg p-6">
-
         {/* Header */}
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
@@ -58,12 +56,15 @@ export default function AdminDashboard() {
         {/* Content */}
         {mode === "dev" && (
           <div className="mt-6 space-y-3 text-sm">
-
-            <Link
-              to="/admin/profile"
-              className="block underline"
-            >
+            <Link to="/admin/profile" className="block underline">
               ✏️ Edit Profile
+            </Link>
+
+            <Link to="/admin/hero" className="block underline">
+              ✏️ Edit Hero Section
+            </Link>
+            <Link to="/admin/projects" className="block underline">
+              🗂 Manage Projects
             </Link>
 
             <span className="block text-gray-400">
@@ -73,7 +74,6 @@ export default function AdminDashboard() {
             <span className="block text-gray-400">
               📄 Update Resume (coming next)
             </span>
-
           </div>
         )}
 
