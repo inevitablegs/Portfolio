@@ -59,3 +59,18 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+    
+    
+    
+from django.db import models
+
+class SkillStack(models.Model):
+    languages = models.TextField(help_text="Comma separated")
+    frameworks = models.TextField(help_text="Comma separated")
+    databases = models.TextField(help_text="Comma separated")
+    tools = models.TextField(help_text="Comma separated")
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "Skills & Tech Stack"

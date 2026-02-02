@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 import Hero from "../components/Hero";
 import Projects from "../components/Projects";
+import Skills from "../components/Skills";
 
 export default function Home() {
   return (
@@ -29,6 +30,7 @@ export default function Home() {
       {/* MAIN CONTENT */}
       <main className="flex-1 overflow-y-auto">
         <Hero />
+        <Skills />
         <Projects />
 
         {/* PERSONAL INFO */}

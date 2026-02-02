@@ -189,3 +189,52 @@ class ProjectAdminView(APIView):
     def delete(self, request, pk):
         Project.objects.filter(pk=pk).delete()
         return Response({"deleted": True})
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import SkillStack
+from .serializers import SkillStackSerializer
+
+class SkillStackPublicView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        stack = SkillStack.objects.first()
+        if not stack:
+            return Response({})
+        return Response(SkillStackSerializer(stack).data)
+
+
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsSuperUser
+
+class SkillStackAdminView(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+
+    def get_object(self):
+        stack, _ = SkillStack.objects.get_or_create(
+            id=1,
+            defaults={
+                "languages": "Python, JavaScript, C#",
+                "frameworks": "Django, React, Tailwind",
+                "databases": "PostgreSQL, SQLite",
+                "tools": "Git, Docker, Unity",
+            }
+        )
+        return stack
+
+    def get(self, request):
+        return Response(
+            SkillStackSerializer(self.get_object()).data
+        )
+
+    def patch(self, request):
+        stack = self.get_object()
+        serializer = SkillStackSerializer(
+            stack, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)

@@ -3,7 +3,10 @@ from .views import MeView
 from .views import ProfileView, AdminDashboardView, AdminProfileView
 from .views import HeroPublicView, HeroAdminView
 from .views import ProjectPublicView, ProjectAdminView
-
+from .views import (
+    SkillStackPublicView,
+    SkillStackAdminView,
+)
 
 urlpatterns = [
     path("me/", MeView.as_view()),
@@ -17,5 +20,11 @@ urlpatterns = [
     path("projects/", ProjectPublicView.as_view()),
     path("admin/projects/", ProjectAdminView.as_view()),
     path("admin/projects/<int:pk>/", ProjectAdminView.as_view()),
+    
+    # Public
+    path("skills/", SkillStackPublicView.as_view()),
+
+    # Admin CMS
+    path("admin/skills/", SkillStackAdminView.as_view()),
 
 ]

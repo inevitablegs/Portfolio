@@ -66,6 +66,9 @@ export default function AdminDashboard() {
             <Link to="/admin/projects" className="block underline">
               🗂 Manage Projects
             </Link>
+            <Link to="/admin/skills" className="block underline">
+              🛠 Edit Skills & Tech Stack
+            </Link>
 
             <span className="block text-gray-400">
               🗂 Manage Projects (coming next)
