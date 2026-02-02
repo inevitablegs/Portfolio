@@ -8,6 +8,14 @@ from .views import (
     SkillStackAdminView,
 )
 
+from .views import ExperiencePublicView, AchievementPublicView, CertificationPublicView, ExperienceAdminView, CertificationAdminView, AchievementAdminView
+
+
+from .views import (
+    ProfileAssetsPublicView,
+    ProfileAssetsAdminView,
+)
+
 urlpatterns = [
     path("me/", MeView.as_view()),
     path("profile/", ProfileView.as_view()),
@@ -26,5 +34,24 @@ urlpatterns = [
 
     # Admin CMS
     path("admin/skills/", SkillStackAdminView.as_view()),
+    # Public
+    path("experience/", ExperiencePublicView.as_view()),
+    path("achievements/", AchievementPublicView.as_view()),
+    path("certifications/", CertificationPublicView.as_view()),
+
+    # Admin CMS
+    path("admin/experience/", ExperienceAdminView.as_view()),
+    path("admin/experience/<int:pk>/", ExperienceAdminView.as_view()),
+
+    path("admin/achievements/", AchievementAdminView.as_view()),
+    path("admin/achievements/<int:pk>/", AchievementAdminView.as_view()),
+
+    path("admin/certifications/", CertificationAdminView.as_view()),
+    path("admin/certifications/<int:pk>/", CertificationAdminView.as_view()),
+    
+    path("profile-assets/", ProfileAssetsPublicView.as_view()),
+
+    # Admin
+    path("admin/profile-assets/", ProfileAssetsAdminView.as_view()),
 
 ]

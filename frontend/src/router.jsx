@@ -9,6 +9,12 @@ import AdminProjects from "./pages/AdminProjects";
 import AdminProjectForm from "./pages/AdminProjectForm";
 import AdminSkillsEdit from "./pages/AdminSkillsEdit";
 
+import AdminExperience from "./pages/AdminExperience";
+import AdminAchievements from "./pages/AdminAchievements";
+import AdminCertifications from "./pages/AdminCertifications";
+
+import AdminProfileAssets from "./pages/AdminProfileAssets";
+
 export default function Router() {
   return (
     <Routes>
@@ -21,8 +27,11 @@ export default function Router() {
       <Route path="/admin/projects" element={<AdminProjects />} />
       <Route path="/admin/projects/new" element={<AdminProjectForm />} />
       <Route path="/admin/projects/:id" element={<AdminProjectForm />} />
-
       <Route path="/admin/skills" element={<AdminSkillsEdit />} />
+      <Route path="/admin/experience" element={<AdminExperience />} />
+      <Route path="/admin/achievements" element={<AdminAchievements />} />
+      <Route path="/admin/certifications" element={<AdminCertifications />} />
+      <Route path="/admin/profile-assets" element={<AdminProfileAssets />} />
     </Routes>
   );
 }

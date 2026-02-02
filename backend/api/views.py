@@ -238,3 +238,185 @@ class SkillStackAdminView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+# backend/api/views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import Experience, Achievement, Certification
+from .serializers import (
+    ExperienceSerializer,
+    AchievementSerializer,
+    CertificationSerializer,
+)
+
+class ExperiencePublicView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        data = Experience.objects.all().order_by("order")
+        return Response(ExperienceSerializer(data, many=True).data)
+    
+
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsSuperUser
+
+class ExperienceAdminView(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+
+    def get(self, request):
+        return Response(
+            ExperienceSerializer(
+                Experience.objects.all().order_by("order"),
+                many=True
+            ).data
+        )
+
+    def post(self, request):
+        s = ExperienceSerializer(data=request.data)
+        s.is_valid(raise_exception=True)
+        s.save()
+        return Response(s.data)
+
+    def patch(self, request, pk):
+        obj = Experience.objects.get(pk=pk)
+        s = ExperienceSerializer(obj, data=request.data, partial=True)
+        s.is_valid(raise_exception=True)
+        s.save()
+        return Response(s.data)
+
+    def delete(self, request, pk):
+        Experience.objects.filter(pk=pk).delete()
+        return Response({"deleted": True})
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsSuperUser
+from .models import Achievement, Certification
+from .serializers import (
+    AchievementSerializer,
+    CertificationSerializer,
+)
+
+
+
+class AchievementPublicView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        data = Achievement.objects.all().order_by("order")
+        return Response(AchievementSerializer(data, many=True).data)
+
+class AchievementAdminView(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+
+    def get(self, request):
+        achievements = Achievement.objects.all().order_by("order")
+        serializer = AchievementSerializer(achievements, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = AchievementSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=201)
+
+    def patch(self, request, pk):
+        achievement = Achievement.objects.get(pk=pk)
+        serializer = AchievementSerializer(
+            achievement,
+            data=request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def delete(self, request, pk):
+        Achievement.objects.filter(pk=pk).delete()
+        return Response({"deleted": True})
+
+
+class CertificationPublicView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        data = Certification.objects.all().order_by("order")
+        return Response(CertificationSerializer(data, many=True).data)
+
+
+class CertificationAdminView(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+
+    def get(self, request):
+        certs = Certification.objects.all().order_by("order")
+        serializer = CertificationSerializer(certs, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = CertificationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=201)
+
+    def patch(self, request, pk):
+        cert = Certification.objects.get(pk=pk)
+        serializer = CertificationSerializer(
+            cert,
+            data=request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def delete(self, request, pk):
+        Certification.objects.filter(pk=pk).delete()
+        return Response({"deleted": True})
+
+# backend/api/views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import ProfileAssets
+from .serializers import ProfileAssetsSerializer
+
+class ProfileAssetsPublicView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        assets = ProfileAssets.objects.first()
+        if not assets:
+            return Response({})
+        return Response(ProfileAssetsSerializer(assets).data)
+
+
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsSuperUser
+
+class ProfileAssetsAdminView(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_object(self):
+        obj, _ = ProfileAssets.objects.get_or_create(id=1)
+        return obj
+
+    def get(self, request):
+        return Response(
+            ProfileAssetsSerializer(self.get_object()).data
+        )
+
+    def patch(self, request):
+        obj = self.get_object()
+        serializer = ProfileAssetsSerializer(
+            obj, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)

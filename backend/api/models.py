@@ -74,3 +74,55 @@ class SkillStack(models.Model):
 
     def __str__(self):
         return "Skills & Tech Stack"
+
+# backend/api/models.py
+class Experience(models.Model):
+    role = models.CharField(max_length=150)
+    organization = models.CharField(max_length=150)
+    start_date = models.CharField(max_length=50)
+    end_date = models.CharField(max_length=50, blank=True)
+    description = models.TextField()
+
+    order = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.role} @ {self.organization}"
+
+class Achievement(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+
+    order = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.title
+
+class Certification(models.Model):
+    name = models.CharField(max_length=200)
+    issuer = models.CharField(max_length=150)
+    certificate_url = models.URLField(blank=True)
+
+    order = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+from django.db import models
+
+class ProfileAssets(models.Model):
+    resume = models.FileField(
+        upload_to="resume/",
+        blank=True,
+        null=True
+    )
+
+    profile_photo = models.ImageField(
+        upload_to="profile/",
+        blank=True,
+        null=True
+    )
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "Profile Assets"

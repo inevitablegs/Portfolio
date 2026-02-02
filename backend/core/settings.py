@@ -10,7 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,12 +82,14 @@ CORS_ALLOW_ALL_ORIGINS = True
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'portfolio_db',
         'USER': 'ganesh',
-        'PASSWORD': 'igs$1308',
+        'PASSWORD': f"{DB_PASSWORD}",
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -128,6 +134,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 # DRF

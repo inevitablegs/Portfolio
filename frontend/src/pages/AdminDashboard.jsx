@@ -69,6 +69,21 @@ export default function AdminDashboard() {
             <Link to="/admin/skills" className="block underline">
               🛠 Edit Skills & Tech Stack
             </Link>
+            <Link to="/admin/experience" className="block underline">
+              🧑‍💼 Manage Experience
+            </Link>
+
+            <Link to="/admin/achievements" className="block underline">
+              🏆 Manage Achievements
+            </Link>
+
+            <Link to="/admin/certifications" className="block underline">
+              🎓 Manage Certifications
+            </Link>
+
+            <Link to="/admin/profile-assets" className="block underline">
+              📄 Resume & Profile Photo
+            </Link>
 
             <span className="block text-gray-400">
               🗂 Manage Projects (coming next)

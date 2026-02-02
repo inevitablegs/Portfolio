@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import Hero from "../components/Hero";
 import Projects from "../components/Projects";
 import Skills from "../components/Skills";
+import Achievements from "../components/Achievements";
+import Experience from "../components/Experience";
+import Certifications from "../components/Certifications";
+import ProfileAssets from "../components/ProfileAssets";
 
 export default function Home() {
   return (
@@ -30,8 +34,13 @@ export default function Home() {
       {/* MAIN CONTENT */}
       <main className="flex-1 overflow-y-auto">
         <Hero />
+        <ProfileAssets />
         <Skills />
         <Projects />
+        <Achievements />
+        <Experience />
+        <Certifications />
+        
 
         {/* PERSONAL INFO */}
         <section className="max-w-5xl mx-auto px-8 mt-16">
