@@ -15,13 +15,17 @@ export default function ProfileAssets() {
   if (!assets) return null;
 
   return (
-    <div className="mt-6">
+    <div className="flex flex-wrap items-center gap-6">
       {assets.profile_photo && (
-        <img
-          src={`${BASE_URL}${assets.profile_photo}`}
-          alt="Profile"
-          className="w-32 h-32 rounded-full object-cover"
-        />
+        <div className="relative">
+          <img
+            src={`${BASE_URL}${assets.profile_photo}`}
+            alt="Profile"
+            className="h-24 w-24 rounded-2xl border-2 border-accent-500/30 object-cover shadow-glow-sm"
+          />
+          {/* Glow effect */}
+          <div className="absolute inset-0 -z-10 rounded-2xl bg-accent-500/20 blur-xl" />
+        </div>
       )}
 
       {assets.resume && (
@@ -29,8 +33,9 @@ export default function ProfileAssets() {
           href={`${BASE_URL}${assets.resume}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="block mt-4 underline"
+          className="btn-secondary"
         >
+          <span>📄</span>
           Download Resume
         </a>
       )}

@@ -2,6 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-.section-title {
-  @apply text-2xl font-semibold;
+@layer base {
+  :root {
+    --color-bg: 15 23 42;
+    --color-surface: 30 41 59;
+    --color-border: 51 65 85;
+    --color-text: 248 250 252;
+    --color-text-muted: 148 163 184;
+    --color-accent: 34 211 238;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased bg-surface-950 text-surface-100;
+  }
+}
+
+@layer components {
+  .section-title {
+    @apply text-xs font-semibold uppercase tracking-[0.2em] text-accent-400;
+  }
+
+  .card {
+    @apply rounded-2xl border border-surface-700/50 bg-surface-900/80 backdrop-blur-sm p-6 shadow-lg;
+  }
+
+  .card-glow {
+    @apply rounded-2xl border border-accent-500/20 bg-surface-900/90 backdrop-blur-sm p-6 shadow-glow-sm;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 rounded-lg bg-accent-500 px-6 py-3 text-sm font-semibold text-surface-950 transition-all hover:bg-accent-400 hover:shadow-glow-sm;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 rounded-lg border border-surface-600 bg-surface-800/50 px-6 py-3 text-sm font-semibold text-surface-200 transition-all hover:border-accent-500/50 hover:bg-surface-800;
+  }
+
+  .glass {
+    @apply bg-surface-900/60 backdrop-blur-md border border-surface-700/50;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-accent-400 via-accent-300 to-glow-violet bg-clip-text text-transparent;
+  }
 }
