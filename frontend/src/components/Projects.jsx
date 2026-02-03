@@ -5,6 +5,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default function Projects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     api.get("/projects/")
@@ -12,6 +13,9 @@ export default function Projects() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  const displayedProjects = showAll ? projects : projects.slice(0, 2);
+  const hasMore = projects.length > 2;
 
   return (
     <div className="card">
@@ -34,11 +38,25 @@ export default function Projects() {
           ))}
         </div>
       ) : (
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
-          ))}
-        </div>
+        <>
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
+            {displayedProjects.map((project, index) => (
+              <ProjectCard key={project.id} project={project} index={index} />
+            ))}
+          </div>
+          
+          {hasMore && !showAll && (
+            <div className="mt-8 flex justify-center">
+              <button
+                onClick={() => setShowAll(true)}
+                className="group flex items-center gap-2 rounded-lg border border-accent-500/30 bg-accent-500/10 px-6 py-3 text-sm font-semibold text-accent-400 transition-all duration-300 hover:border-accent-500/50 hover:bg-accent-500/20 hover:shadow-glow-sm hover:scale-105"
+              >
+                See More Projects
+                <span className="transition-transform duration-300 group-hover:translate-y-1">↓</span>
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -132,25 +150,27 @@ function ProjectCard({ project, index }) {
               {showFullDesc ? "Show less ↑" : "Read more ↓"}
             </button>
             {showFullDesc && (
-              <p className="mt-2 text-xs leading-relaxed text-surface-400 border-l-2 border-accent-500/30 pl-3 animate-fadeIn">
-                {project.description}
-              </p>
+              <div className="mt-2 space-y-3 border-l-2 border-accent-500/30 pl-3 animate-fadeIn">
+                <p className="text-xs leading-relaxed text-surface-400">
+                  {project.description}
+                </p>
+                
+                {/* Use Cases - Inside expanded section */}
+                {project.use_cases && (
+                  <div>
+                    <p className="text-xs font-semibold text-accent-400 mb-2">✨ Key Features:</p>
+                    <div className="space-y-1.5">
+                      {project.use_cases.split(",").map((useCase, i) => (
+                        <div key={i} className="flex items-start gap-2 text-xs text-surface-300">
+                          <span className="text-accent-400 mt-0.5">▸</span>
+                          <span>{useCase.trim()}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
-          </div>
-        )}
-
-        {/* Use Cases */}
-        {project.use_cases && (
-          <div className="mt-4">
-            <p className="text-xs font-semibold text-surface-300 mb-2">Key Features:</p>
-            <div className="space-y-1">
-              {project.use_cases.split(",").slice(0, 3).map((useCase, i) => (
-                <div key={i} className="flex items-start gap-2 text-xs text-surface-400">
-                  <span className="text-accent-400 mt-0.5">▸</span>
-                  <span>{useCase.trim()}</span>
-                </div>
-              ))}
-            </div>
           </div>
         )}
 
