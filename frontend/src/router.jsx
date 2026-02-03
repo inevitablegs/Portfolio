@@ -20,10 +20,10 @@ export default function Router() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/profile" element={<Profile />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/profile" element={<AdminProfileEdit />} />
-      <Route path="/profile" element={<Profile />} />
       <Route path="/admin/hero" element={<AdminHeroEdit />} />
       <Route path="/admin/projects" element={<AdminProjects />} />
       <Route path="/admin/projects/new" element={<AdminProjectForm />} />

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import Hero from "../components/Hero";
 import Projects from "../components/Projects";
@@ -6,8 +7,17 @@ import Skills from "../components/Skills";
 import Achievements from "../components/Achievements";
 import Experience from "../components/Experience";
 import Certifications from "../components/Certifications";
+import api from "../api/axios";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Home() {
+  const [assets, setAssets] = useState(null);
+
+  useEffect(() => {
+    api.get("/profile-assets/")
+      .then(res => setAssets(res.data))
+      .catch(() => {});
+  }, []);
   return (
     <div className="min-h-screen bg-surface-950 text-surface-100">
       {/* Futuristic background */}
@@ -88,11 +98,17 @@ export default function Home() {
             </div>
 
             <Link to="/profile" title="Profile">
-              <img
-                src="https://via.placeholder.com/48"
-                alt="Profile"
-                className="h-9 w-9 rounded-full border-2 border-surface-700 object-cover transition hover:border-accent-400 hover:shadow-glow-sm"
-              />
+              {assets?.profile_photo ? (
+                <img
+                  src={`${BASE_URL}${assets.profile_photo}`}
+                  alt="Profile"
+                  className="h-9 w-9 rounded-full border-2 border-surface-700 object-cover transition hover:border-accent-400 hover:shadow-glow-sm"
+                />
+              ) : (
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-surface-700 bg-gradient-to-br from-accent-400/20 to-accent-600/20 text-xs font-bold text-accent-400 transition hover:border-accent-400 hover:shadow-glow-sm">
+                  GS
+                </div>
+              )}
             </Link>
             <Link
               to="/admin/login"
@@ -122,7 +138,7 @@ export default function Home() {
               <InfoCard
                 icon="📧"
                 label="Email"
-                value="ganeshsonawane.dev@gmail.com"
+                value="sonawaneganu3101@gmail.com"
               />
               <InfoCard
                 icon="💼"
@@ -220,7 +236,9 @@ export default function Home() {
                 </p>
                 <div className="mt-8 flex flex-wrap items-center gap-4">
                   <a
-                    href="mailto:ganeshsonawane.dev@gmail.com"
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=sonawaneganu3101@gmail.com"
+                    target="_blank"
+                    rel="noreferrer"
                     className="btn-primary"
                   >
                     Get in Touch

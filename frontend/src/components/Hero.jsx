@@ -55,7 +55,9 @@ export default function Hero() {
               </a>
             )}
             <a
-              href="mailto:ganeshsonawane.dev@gmail.com"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=sonawaneganu3101@gmail.com"
+              target="_blank"
+              rel="noreferrer"
               className="btn-secondary"
             >
               Say Hello

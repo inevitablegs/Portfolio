@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 export default function AdminProfileAssets() {
   const [resume, setResume] = useState(null);
   const [photo, setPhoto] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [currentAssets, setCurrentAssets] = useState(null);
   const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
 
@@ -20,12 +22,14 @@ export default function AdminProfileAssets() {
     if (photo) form.append("profile_photo", photo);
 
     try {
-      await api.patch("/admin/profile-assets/", form, {
+      const response = await api.patch("/admin/profile-assets/", form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("Updated successfully");
       setResume(null);
       setPhoto(null);
+      setPhotoPreview(null);
+      setCurrentAssets(response.data);
     } catch (error) {
       alert("Failed to upload files");
     } finally {
@@ -33,8 +37,21 @@ export default function AdminProfileAssets() {
     }
   };
 
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPhoto(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   useEffect(() => {
     api.get("/admin/profile-assets/")
+      .then(res => setCurrentAssets(res.data))
       .catch(() => navigate("/admin/login"));
   }, []);
 
@@ -100,11 +117,36 @@ export default function AdminProfileAssets() {
               <label className="mb-3 block text-sm font-medium text-surface-300">
                 Profile Photo
               </label>
+              
+              {/* Current and Preview Photos */}
+              <div className="mb-4 flex flex-wrap gap-4">
+                {currentAssets?.profile_photo && (
+                  <div>
+                    <p className="mb-2 text-xs text-surface-500">Current Photo</p>
+                    <img
+                      src={`${import.meta.env.VITE_API_BASE_URL}${currentAssets.profile_photo}`}
+                      alt="Current profile"
+                      className="h-24 w-24 rounded-xl border-2 border-surface-700 object-cover"
+                    />
+                  </div>
+                )}
+                {photoPreview && (
+                  <div>
+                    <p className="mb-2 text-xs text-accent-400">New Photo Preview</p>
+                    <img
+                      src={photoPreview}
+                      alt="Preview"
+                      className="h-24 w-24 rounded-xl border-2 border-accent-500 object-cover shadow-glow-sm"
+                    />
+                  </div>
+                )}
+              </div>
+              
               <div className="relative">
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={e => setPhoto(e.target.files[0])}
+                  onChange={handlePhotoChange}
                   className="block w-full rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-3 text-sm text-surface-100 file:mr-4 file:rounded-lg file:border-0 file:bg-accent-500/20 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-accent-400 hover:file:bg-accent-500/30"
                 />
               </div>

@@ -88,34 +88,84 @@ export default function AdminProfileEdit() {
             </div>
           )}
 
-          <div className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              <Input label="Name" name="name" value={profile.name} onChange={handleChange} placeholder="Your name" />
-              <Input label="Title" name="title" value={profile.title} onChange={handleChange} placeholder="e.g., Full-Stack Developer" />
+          <div className="space-y-8">
+            {/* Basic Information */}
+            <div>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-accent-400">
+                📋 Basic Information
+              </h3>
+              <div className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Input label="Full Name" name="name" value={profile.name} onChange={handleChange} placeholder="Your name" required />
+                  <Input label="Professional Title" name="title" value={profile.title} onChange={handleChange} placeholder="e.g., Full-Stack Developer" required />
+                </div>
+              </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              <Input label="Location" name="location" value={profile.location} onChange={handleChange} placeholder="City, Country" />
-              <Input label="Email" name="email" type="email" value={profile.email} onChange={handleChange} placeholder="email@example.com" />
+            {/* Contact Details */}
+            <div>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-accent-400">
+                📞 Contact Details
+              </h3>
+              <div className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Input label="Location" name="location" value={profile.location} onChange={handleChange} placeholder="City, Country" />
+                  <Input label="Email" name="email" type="email" value={profile.email} onChange={handleChange} placeholder="email@example.com" required />
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Input label="Phone" name="phone" value={profile.phone} onChange={handleChange} placeholder="+1 (555) 123-4567" />
+                  <Input label="Open To" name="open_to" value={profile.open_to} onChange={handleChange} placeholder="e.g., Internships, Full-time roles" />
+                </div>
+              </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              <Input label="Phone" name="phone" value={profile.phone} onChange={handleChange} placeholder="+1 (555) 123-4567" />
-              <Input label="Open To" name="open_to" value={profile.open_to} onChange={handleChange} placeholder="e.g., Internships" />
+            {/* Skills */}
+            <div>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-accent-400">
+                🛠 Technical Skills
+              </h3>
+              <Textarea
+                label="Skills (comma separated)"
+                name="skills"
+                value={profile.skills}
+                onChange={handleChange}
+                placeholder="React, Node.js, Python, Django, PostgreSQL, Docker"
+                rows="4"
+              />
+              <p className="mt-2 text-xs text-surface-500">Separate each skill with a comma</p>
             </div>
 
-            <Textarea
-              label="Skills (comma separated)"
-              name="skills"
-              value={profile.skills}
-              onChange={handleChange}
-              placeholder="React, Node.js, Python, etc."
-            />
-
-            <div className="space-y-6">
-              <Input label="GitHub URL" name="github" value={profile.github || ""} onChange={handleChange} placeholder="https://github.com/username" />
-              <Input label="LinkedIn URL" name="linkedin" value={profile.linkedin || ""} onChange={handleChange} placeholder="https://linkedin.com/in/username" />
-              <Input label="Resume URL" name="resume" value={profile.resume || ""} onChange={handleChange} placeholder="https://..." />
+            {/* Social Links */}
+            <div>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-accent-400">
+                🔗 Social & Portfolio Links
+              </h3>
+              <div className="space-y-4">
+                <Input 
+                  label="GitHub Profile" 
+                  name="github" 
+                  value={profile.github || ""} 
+                  onChange={handleChange} 
+                  placeholder="https://github.com/username"
+                  icon="💻"
+                />
+                <Input 
+                  label="LinkedIn Profile" 
+                  name="linkedin" 
+                  value={profile.linkedin || ""} 
+                  onChange={handleChange} 
+                  placeholder="https://linkedin.com/in/username"
+                  icon="💼"
+                />
+                <Input 
+                  label="Resume URL" 
+                  name="resume" 
+                  value={profile.resume || ""} 
+                  onChange={handleChange} 
+                  placeholder="https://drive.google.com/..."
+                  icon="📄"
+                />
+              </div>
             </div>
           </div>
 
@@ -144,10 +194,13 @@ export default function AdminProfileEdit() {
 
 /* ---------- Reusable Inputs ---------- */
 
-function Input({ label, ...props }) {
+function Input({ label, icon, ...props }) {
   return (
     <div>
-      <label className="mb-2 block text-sm font-medium text-surface-300">{label}</label>
+      <label className="mb-2 block text-sm font-medium text-surface-300">
+        {icon && <span className="mr-1.5">{icon}</span>}
+        {label}
+      </label>
       <input
         {...props}
         className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-3 text-surface-100 placeholder-surface-500 transition focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
