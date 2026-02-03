@@ -144,6 +144,13 @@ class Certification(models.Model):
     name = models.CharField(max_length=200)
     issuer = models.CharField(max_length=150)
     certificate_url = models.URLField(blank=True)
+    
+    image = models.ImageField(
+        upload_to="certificates/",
+        blank=True,
+        null=True,
+        help_text="Certificate badge or logo"
+    )
 
     order = models.PositiveIntegerField(default=0)
 

@@ -165,11 +165,11 @@ class ProjectPublicView(APIView):
     
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsSuperUser
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 class ProjectAdminView(APIView):
     permission_classes = [IsAuthenticated, IsSuperUser]
-    parser_classes = [MultiPartParser, FormParser]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get(self, request):
         projects = Project.objects.all().order_by("order")
@@ -385,8 +385,13 @@ class CertificationPublicView(APIView):
         return Response(CertificationSerializer(data, many=True).data)
 
 
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsSuperUser
+
 class CertificationAdminView(APIView):
     permission_classes = [IsAuthenticated, IsSuperUser]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get(self, request):
         certs = Certification.objects.all().order_by("order")
@@ -431,13 +436,13 @@ class ProfileAssetsPublicView(APIView):
         return Response(ProfileAssetsSerializer(assets).data)
 
 
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsSuperUser
 
 class ProfileAssetsAdminView(APIView):
     permission_classes = [IsAuthenticated, IsSuperUser]
-    parser_classes = [MultiPartParser, FormParser]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get_object(self):
         obj, _ = ProfileAssets.objects.get_or_create(id=1)

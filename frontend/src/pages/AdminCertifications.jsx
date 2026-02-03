@@ -2,10 +2,14 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 export default function AdminCertifications() {
   const [items, setItems] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({});
+  const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
 
   const load = () => {
@@ -18,87 +22,236 @@ export default function AdminCertifications() {
   useEffect(load, []);
 
   const add = async () => {
-    await api.post("/admin/certifications/", {
-      name: "Certificate name",
-      issuer: "Issuer",
+    const newCert = await api.post("/admin/certifications/", {
+      name: "New Certificate",
+      issuer: "Issuer Name",
       certificate_url: "",
       order: items.length + 1,
     });
     load();
+    setEditingId(newCert.data.id);
+    setEditData(newCert.data);
+    setImagePreview(null);
   };
-
-//   const update = async (id, field, value) => {
-//     await api.patch(`/admin/certifications/${id}/`, { [field]: value });
-//     load();
-//   };
 
   const remove = async (id) => {
-    if (!window.confirm("Delete certification?")) return;
+    if (!window.confirm("Delete this certification?")) return;
     await api.delete(`/admin/certifications/${id}/`);
+    if (editingId === id) {
+      setEditingId(null);
+      setEditData({});
+      setImagePreview(null);
+    }
     load();
   };
 
-  const updateLocal = (id, field, value) => {
-    setItems(items.map((i) => (i.id === id ? { ...i, [field]: value } : i)));
+  const startEdit = (item) => {
+    setEditingId(item.id);
+    setEditData({ ...item });
+    setImagePreview(item.image ? `${BASE_URL}${item.image}` : null);
   };
 
-  const save = async (item) => {
-    await api.patch(`/admin/certifications/${item.id}/`, item);
-    alert("Saved");
-    load();
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditData({});
+    setImagePreview(null);
+  };
+
+  const handleImageChange = (file) => {
+    if (file) {
+      setEditData(prev => ({ ...prev, image: file }));
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const saveEdit = async () => {
+    const formData = new FormData();
+    formData.append('name', editData.name);
+    formData.append('issuer', editData.issuer);
+    formData.append('certificate_url', editData.certificate_url || '');
+    formData.append('order', editData.order);
+    
+    if (editData.image instanceof File) {
+      formData.append('image', editData.image);
+    }
+
+    try {
+      await api.patch(`/admin/certifications/${editingId}/`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setEditingId(null);
+      setEditData({});
+      setImagePreview(null);
+      load();
+    } catch (error) {
+      alert("Failed to save");
+    }
   };
 
   return (
     <AdminLayout title="Certifications" onAdd={add}>
-      {items.map((item) => (
-        <Card key={item.id}>
-          <Input
-            placeholder="Certificate name"
-            value={item.name}
-            onChange={(e) => updateLocal(item.id, "name", e.target.value)}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {items.map((item) => (
+          <CertCard 
+            key={item.id} 
+            item={item}
+            isEditing={editingId === item.id}
+            editData={editData}
+            imagePreview={imagePreview}
+            onEdit={startEdit}
+            onDelete={remove}
+            onSave={saveEdit}
+            onCancel={cancelEdit}
+            onFieldChange={(field, value) => setEditData(prev => ({ ...prev, [field]: value }))}
+            onImageChange={handleImageChange}
           />
-          <Input
-            placeholder="Issuer"
-            value={item.issuer}
-            onChange={(e) => updateLocal(item.id, "issuer", e.target.value)}
-          />
-          <Input
-            placeholder="Certificate URL (optional)"
-            value={item.certificate_url}
-            onChange={(e) =>
-              updateLocal(item.id, "certificate_url", e.target.value)
-            }
-          />
-
-          <div className="flex gap-3 pt-2">
-            <button
-              onClick={() => save(item)}
-              className="rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 px-5 py-2 text-sm font-semibold text-surface-950 shadow-lg transition hover:shadow-accent-500/50"
-            >
-              Save
-            </button>
-            <DeleteBtn onClick={() => remove(item.id)} />
-          </div>
-        </Card>
-      ))}
+        ))}
+      </div>
+      
+      {items.length === 0 && (
+        <div className="rounded-xl border border-surface-800/50 bg-surface-900/50 p-12 text-center backdrop-blur-xl">
+          <p className="text-surface-400">No certifications yet. Click "Add" to create one.</p>
+        </div>
+      )}
     </AdminLayout>
   );
 }
 
-const Card = ({ children }) => (
-  <div className="rounded-xl border border-surface-800/50 bg-surface-900/50 p-6 backdrop-blur-xl space-y-4">{children}</div>
-);
+function CertCard({ item, isEditing, editData, imagePreview, onEdit, onDelete, onSave, onCancel, onFieldChange, onImageChange }) {
+  if (isEditing) {
+    return (
+      <div className="rounded-xl border border-accent-500/50 bg-gradient-to-br from-surface-900/90 to-surface-800/90 p-6 backdrop-blur-xl shadow-glow-md">
+        <div className="space-y-4">
+          {/* Image Upload */}
+          <div>
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-accent-400">
+              Certificate Badge/Logo
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => onImageChange(e.target.files[0])}
+              className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-2 text-sm text-surface-100 file:mr-3 file:rounded-md file:border-0 file:bg-accent-500 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-surface-950 hover:file:bg-accent-400"
+            />
+            {imagePreview && (
+              <div className="mt-3 flex justify-center">
+                <div className="relative w-24 h-24 rounded-lg overflow-hidden border-2 border-accent-500/30 bg-surface-900">
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-full h-full object-contain p-2"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
 
-const Input = (props) => (
-  <input {...props} className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-3 text-surface-100 placeholder-surface-500 transition focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20" />
-);
+          <div>
+            <label className="mb-1 block text-xs font-medium text-surface-400">Certificate Name</label>
+            <input
+              type="text"
+              value={editData.name}
+              onChange={(e) => onFieldChange('name', e.target.value)}
+              className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-2 text-sm text-surface-100 placeholder-surface-500 transition focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
+              placeholder="e.g., AWS Certified Developer"
+            />
+          </div>
 
-const Textarea = (props) => (
-  <textarea {...props} rows="3" className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-3 text-surface-100 placeholder-surface-500 transition focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20" />
-);
+          <div>
+            <label className="mb-1 block text-xs font-medium text-surface-400">Issuer</label>
+            <input
+              type="text"
+              value={editData.issuer}
+              onChange={(e) => onFieldChange('issuer', e.target.value)}
+              className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-2 text-sm text-surface-100 placeholder-surface-500 transition focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
+              placeholder="e.g., Amazon Web Services"
+            />
+          </div>
 
-const DeleteBtn = ({ onClick }) => (
-  <button onClick={onClick} className="rounded-lg border border-red-500/30 bg-red-500/10 px-5 py-2 text-sm font-semibold text-red-400 transition hover:border-red-500/50 hover:bg-red-500/20">
-    Delete
-  </button>
-);
+          <div>
+            <label className="mb-1 block text-xs font-medium text-surface-400">Certificate URL (Optional)</label>
+            <input
+              type="url"
+              value={editData.certificate_url}
+              onChange={(e) => onFieldChange('certificate_url', e.target.value)}
+              className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-2 text-sm text-surface-100 placeholder-surface-500 transition focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
+              placeholder="https://..."
+            />
+          </div>
+
+          <div className="flex gap-2 pt-2">
+            <button
+              onClick={onSave}
+              className="flex-1 rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 px-4 py-2 text-sm font-semibold text-surface-950 shadow-lg transition hover:from-accent-400 hover:to-accent-500 hover:shadow-accent-500/50"
+            >
+              Save
+            </button>
+            <button
+              onClick={onCancel}
+              className="rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-2 text-sm font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="group relative rounded-xl border border-surface-800/50 bg-surface-900/50 overflow-hidden backdrop-blur-xl transition-all duration-300 hover:border-accent-500/30 hover:shadow-glow-sm">
+      {/* Certificate Image/Icon */}
+      <div className="relative h-32 bg-surface-900/50 flex items-center justify-center">
+        {item.image ? (
+          <img
+            src={`${BASE_URL}${item.image}`}
+            alt={item.name}
+            className="h-full w-full object-contain p-4"
+          />
+        ) : (
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-500/20 text-3xl">
+            📜
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="p-4">
+        <h3 className="text-sm font-bold text-surface-100 line-clamp-2 min-h-[2.5rem]">
+          {item.name}
+        </h3>
+        <p className="mt-1 text-xs text-surface-400">{item.issuer}</p>
+        
+        {item.certificate_url && (
+          <a
+            href={item.certificate_url}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-2 inline-flex items-center gap-1 text-xs text-accent-400 hover:text-accent-300"
+          >
+            <span>🔗</span>
+            View Certificate
+          </a>
+        )}
+
+        {/* Action Buttons */}
+        <div className="mt-4 flex gap-2">
+          <button
+            onClick={() => onEdit(item)}
+            className="flex-1 rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-1.5 text-xs font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => onDelete(item.id)}
+            className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-400 transition hover:border-red-500/50 hover:bg-red-500/20"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
