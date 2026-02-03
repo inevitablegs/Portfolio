@@ -27,63 +27,97 @@ export default function AdminProjects() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-4xl bg-white border rounded p-6">
+    <div className="min-h-screen bg-surface-950">
+      {/* Background effects */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0 opacity-100 [background-image:linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] [background-size:48px_48px]" />
+        <div className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-accent-500/10 blur-[120px]" />
+      </div>
 
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Manage Projects</h1>
+      {/* Header */}
+      <header className="sticky top-0 z-30 border-b border-surface-800/50 bg-surface-950/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <button
+            onClick={() => navigate("/admin/dashboard")}
+            className="flex items-center gap-2 text-sm text-surface-400 transition hover:text-accent-400"
+          >
+            ← Back to Dashboard
+          </button>
+          <button
+            onClick={() => {
+              localStorage.clear();
+              navigate("/");
+            }}
+            className="rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-2 text-xs font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
+          >
+            Logout
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="mx-auto max-w-6xl px-6 py-12">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-3xl font-bold tracking-tight text-surface-100">
+            Manage Projects
+          </h1>
           <Link
             to="/admin/projects/new"
-            className="bg-black text-white px-4 py-2 text-sm"
+            className="rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 px-5 py-2.5 text-sm font-semibold text-surface-950 shadow-lg transition hover:shadow-accent-500/50"
           >
             + New Project
           </Link>
         </div>
 
         {projects.length === 0 && (
-          <p className="text-sm text-gray-500">No projects yet.</p>
+          <div className="rounded-xl border border-surface-800/50 bg-surface-900/50 p-12 text-center backdrop-blur-xl">
+            <p className="text-surface-400">No projects yet. Create your first project!</p>
+          </div>
         )}
 
-        <ul className="space-y-3">
+        <div className="space-y-4">
           {projects.map(project => (
-            <li
+            <div
               key={project.id}
-              className="border rounded p-4 flex justify-between items-start"
+              className="rounded-xl border border-surface-800/50 bg-surface-900/50 p-6 backdrop-blur-xl transition hover:border-accent-500/30"
             >
-              <div>
-                <h3 className="font-semibold">{project.title}</h3>
-                <p className="text-sm text-gray-600">
-                  {project.short_description}
-                </p>
-              </div>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-surface-100">{project.title}</h3>
+                  <p className="mt-2 text-sm text-surface-400">
+                    {project.short_description}
+                  </p>
+                  {project.tech_stack && (
+                    <p className="mt-2 text-xs text-surface-500">
+                      Tech: {project.tech_stack}
+                    </p>
+                  )}
+                  {project.featured && (
+                    <span className="mt-2 inline-block rounded-lg border border-accent-500/30 bg-accent-500/10 px-2 py-1 text-xs text-accent-400">
+                      ⭐ Featured
+                    </span>
+                  )}
+                </div>
 
-              <div className="flex gap-3 text-sm">
-                <Link
-                  to={`/admin/projects/${project.id}`}
-                  className="underline"
-                >
-                  Edit
-                </Link>
-                <button
-                  onClick={() => deleteProject(project.id)}
-                  className="text-red-600"
-                >
-                  Delete
-                </button>
+                <div className="flex gap-3">
+                  <Link
+                    to={`/admin/projects/${project.id}`}
+                    className="rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-2 text-sm font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
+                  >
+                    Edit
+                  </Link>
+                  <button
+                    onClick={() => deleteProject(project.id)}
+                    className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-400 transition hover:border-red-500/50 hover:bg-red-500/20"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
-
-        <div className="mt-6">
-          <Link
-            to="/admin/dashboard"
-            className="text-sm text-gray-500 hover:text-black"
-          >
-            ← Back to Dashboard
-          </Link>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

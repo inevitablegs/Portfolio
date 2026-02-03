@@ -34,8 +34,8 @@ export default function Home() {
 
           <nav className="hidden items-center gap-8 text-sm font-medium text-surface-400 md:flex">
             <a href="#skills" className="transition hover:text-accent-400">Skills</a>
-            <a href="#experience" className="transition hover:text-accent-400">Experience</a>
             <a href="#projects" className="transition hover:text-accent-400">Projects</a>
+            <a href="#experience" className="transition hover:text-accent-400">Experience</a>
             <a href="#contact" className="transition hover:text-accent-400">Contact</a>
           </nav>
 

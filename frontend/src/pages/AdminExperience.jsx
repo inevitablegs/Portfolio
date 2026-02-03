@@ -49,16 +49,18 @@ export default function AdminExperience() {
     <AdminLayout title="Experience" onAdd={add}>
       {items.map(item => (
         <Card key={item.id}>
-          <Input value={item.role} onChange={e => updateLocal(item.id, "role", e.target.value)} />
-          <Input value={item.organization} onChange={e => updateLocal(item.id, "organization", e.target.value)} />
-          <Input value={item.start_date} onChange={e => updateLocal(item.id, "start_date", e.target.value)} />
-          <Input value={item.end_date} onChange={e => updateLocal(item.id, "end_date", e.target.value)} />
-          <Textarea value={item.description} onChange={e => updateLocal(item.id, "description", e.target.value)} />
+          <Input placeholder="Role" value={item.role} onChange={e => updateLocal(item.id, "role", e.target.value)} />
+          <Input placeholder="Organization" value={item.organization} onChange={e => updateLocal(item.id, "organization", e.target.value)} />
+          <div className="grid gap-4 md:grid-cols-2">
+            <Input placeholder="Start Date (e.g., 2024)" value={item.start_date} onChange={e => updateLocal(item.id, "start_date", e.target.value)} />
+            <Input placeholder="End Date (or leave empty)" value={item.end_date} onChange={e => updateLocal(item.id, "end_date", e.target.value)} />
+          </div>
+          <Textarea placeholder="Description" value={item.description} onChange={e => updateLocal(item.id, "description", e.target.value)} />
 
           <div className="flex gap-3 pt-2">
             <button
               onClick={() => save(item)}
-              className="bg-black text-white px-4 py-1 text-sm"
+              className="rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 px-5 py-2 text-sm font-semibold text-surface-950 shadow-lg transition hover:shadow-accent-500/50"
             >
               Save
             </button>
@@ -72,19 +74,19 @@ export default function AdminExperience() {
 
 
 const Card = ({ children }) => (
-  <div className="border p-4 rounded space-y-2">{children}</div>
+  <div className="rounded-xl border border-surface-800/50 bg-surface-900/50 p-6 backdrop-blur-xl space-y-4">{children}</div>
 );
 
 const Input = (props) => (
-  <input {...props} className="w-full border px-3 py-2 rounded" />
+  <input {...props} className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-3 text-surface-100 placeholder-surface-500 transition focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20" />
 );
 
 const Textarea = (props) => (
-  <textarea {...props} rows="3" className="w-full border px-3 py-2 rounded" />
+  <textarea {...props} rows="3" className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-3 text-surface-100 placeholder-surface-500 transition focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20" />
 );
 
 const DeleteBtn = ({ onClick }) => (
-  <button onClick={onClick} className="text-sm text-red-600">
+  <button onClick={onClick} className="rounded-lg border border-red-500/30 bg-red-500/10 px-5 py-2 text-sm font-semibold text-red-400 transition hover:border-red-500/50 hover:bg-red-500/20">
     Delete
   </button>
 );
