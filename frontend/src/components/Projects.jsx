@@ -80,6 +80,35 @@ function ProjectCard({ project, index }) {
               ⭐ Featured
             </div>
           )}
+
+          {/* Action Buttons - Bottom Right Corner */}
+          <div className="absolute bottom-3 right-3 flex gap-2 text-xs font-semibold">
+            {project.github_url && (
+              <a
+                href={project.github_url}
+                className="flex items-center gap-1.5 rounded-lg border border-surface-600/80 bg-surface-900/90 backdrop-blur-sm px-3 py-2 text-surface-200 transition-all duration-300 hover:border-accent-500/50 hover:bg-surface-800/90 hover:text-accent-400 hover:shadow-glow-sm hover:scale-105"
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span>💻</span>
+                GitHub
+              </a>
+            )}
+
+            {project.live_url && (
+              <a
+                href={project.live_url}
+                className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 px-3 py-2 text-surface-950 font-bold backdrop-blur-sm transition-all duration-300 hover:from-accent-400 hover:to-accent-500 hover:shadow-glow-md hover:scale-105"
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span>🚀</span>
+                Live
+              </a>
+            )}
+          </div>
         </div>
       )}
       
@@ -138,33 +167,6 @@ function ProjectCard({ project, index }) {
               {tech.trim()}
             </span>
           ))}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="mt-5 flex gap-3 text-xs font-semibold">
-          {project.github_url && (
-            <a
-              href={project.github_url}
-              className="flex items-center gap-2 rounded-lg border border-surface-600 bg-surface-700/50 px-3 py-2 text-surface-300 transition-all duration-300 hover:border-accent-500/50 hover:text-accent-400 hover:shadow-glow-sm hover:-translate-y-0.5"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span>💻</span>
-              GitHub
-            </a>
-          )}
-
-          {project.live_url && (
-            <a
-              href={project.live_url}
-              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 px-3 py-2 text-surface-950 font-bold transition-all duration-300 hover:from-accent-400 hover:to-accent-500 hover:shadow-glow-md hover:-translate-y-0.5"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span>🚀</span>
-              Live Demo
-            </a>
-          )}
         </div>
       </div>
     </div>
