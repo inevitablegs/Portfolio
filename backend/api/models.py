@@ -43,6 +43,18 @@ class Project(models.Model):
     title = models.CharField(max_length=200)
     short_description = models.CharField(max_length=300)
     description = models.TextField()
+    
+    use_cases = models.TextField(
+        blank=True,
+        help_text="Project use cases or key features (comma separated)"
+    )
+    
+    image = models.ImageField(
+        upload_to="projects/",
+        blank=True,
+        null=True,
+        help_text="Project screenshot or thumbnail"
+    )
 
     tech_stack = models.CharField(
         max_length=300,
@@ -74,6 +86,37 @@ class SkillStack(models.Model):
 
     def __str__(self):
         return "Skills & Tech Stack"
+
+
+class Skill(models.Model):
+    SKILL_TYPE_CHOICES = [
+        ('language', 'Programming Language'),
+        ('framework', 'Framework/Library'),
+        ('database', 'Database'),
+        ('tool', 'Tool/Platform'),
+        ('other', 'Other'),
+    ]
+
+    name = models.CharField(max_length=100)
+    skill_type = models.CharField(
+        max_length=20,
+        choices=SKILL_TYPE_CHOICES,
+        default='other'
+    )
+    proficiency = models.PositiveIntegerField(
+        default=50,
+        help_text="Proficiency level (0-100)"
+    )
+    order = models.PositiveIntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', '-proficiency', 'name']
+
+    def __str__(self):
+        return f"{self.name} ({self.get_skill_type_display()}) - {self.proficiency}%"
 
 # backend/api/models.py
 class Experience(models.Model):

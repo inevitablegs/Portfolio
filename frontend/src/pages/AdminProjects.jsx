@@ -79,39 +79,67 @@ export default function AdminProjects() {
           {projects.map(project => (
             <div
               key={project.id}
-              className="rounded-xl border border-surface-800/50 bg-surface-900/50 p-6 backdrop-blur-xl transition hover:border-accent-500/30"
+              className="rounded-xl border border-surface-800/50 bg-surface-900/50 overflow-hidden backdrop-blur-xl transition hover:border-accent-500/30"
             >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-surface-100">{project.title}</h3>
-                  <p className="mt-2 text-sm text-surface-400">
-                    {project.short_description}
-                  </p>
-                  {project.tech_stack && (
-                    <p className="mt-2 text-xs text-surface-500">
-                      Tech: {project.tech_stack}
-                    </p>
-                  )}
-                  {project.featured && (
-                    <span className="mt-2 inline-block rounded-lg border border-accent-500/30 bg-accent-500/10 px-2 py-1 text-xs text-accent-400">
-                      ⭐ Featured
-                    </span>
-                  )}
-                </div>
+              <div className="flex items-start gap-4">
+                {/* Project Image Thumbnail */}
+                {project.image && (
+                  <div className="w-32 h-32 flex-shrink-0 bg-surface-800">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                
+                <div className="flex-1 p-6">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-surface-100">{project.title}</h3>
+                      <p className="mt-2 text-sm text-surface-400">
+                        {project.short_description}
+                      </p>
+                      {project.use_cases && (
+                        <p className="mt-2 text-xs text-surface-500">
+                          Features: {project.use_cases.split(',').slice(0, 2).join(', ')}...
+                        </p>
+                      )}
+                      {project.tech_stack && (
+                        <p className="mt-2 text-xs text-surface-500">
+                          Tech: {project.tech_stack}
+                        </p>
+                      )}
+                      <div className="mt-2 flex items-center gap-2">
+                        {project.featured && (
+                          <span className="inline-block rounded-lg border border-accent-500/30 bg-accent-500/10 px-2 py-1 text-xs text-accent-400">
+                            ⭐ Featured
+                          </span>
+                        )}
+                        {project.github_url && (
+                          <span className="text-xs text-surface-500">💻 GitHub</span>
+                        )}
+                        {project.live_url && (
+                          <span className="text-xs text-surface-500">🚀 Live</span>
+                        )}
+                      </div>
+                    </div>
 
-                <div className="flex gap-3">
-                  <Link
-                    to={`/admin/projects/${project.id}`}
-                    className="rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-2 text-sm font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => deleteProject(project.id)}
-                    className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-400 transition hover:border-red-500/50 hover:bg-red-500/20"
-                  >
-                    Delete
-                  </button>
+                    <div className="flex gap-3">
+                      <Link
+                        to={`/admin/projects/${project.id}`}
+                        className="rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-2 text-sm font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => deleteProject(project.id)}
+                        className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-400 transition hover:border-red-500/50 hover:bg-red-500/20"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

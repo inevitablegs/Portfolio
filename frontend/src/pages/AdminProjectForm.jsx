@@ -6,11 +6,13 @@ export default function AdminProjectForm() {
   const { id } = useParams(); // undefined for new
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const [project, setProject] = useState({
     title: "",
     short_description: "",
     description: "",
+    use_cases: "",
     tech_stack: "",
     github_url: "",
     live_url: "",
@@ -23,7 +25,10 @@ export default function AdminProjectForm() {
       api.get("/admin/projects/")
         .then(res => {
           const found = res.data.find(p => p.id === Number(id));
-          if (found) setProject(found);
+          if (found) {
+            setProject(found);
+            if (found.image) setImagePreview(found.image);
+          }
         })
         .catch(() => navigate("/admin/login"));
     }
@@ -37,15 +42,42 @@ export default function AdminProjectForm() {
     });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProject({ ...project, image: file });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const save = async (e) => {
     e.preventDefault();
     setSaving(true);
 
     try {
+      const formData = new FormData();
+      Object.keys(project).forEach(key => {
+        if (project[key] !== null && project[key] !== undefined) {
+          if (key === 'image' && project[key] instanceof File) {
+            formData.append(key, project[key]);
+          } else if (key !== 'image') {
+            formData.append(key, project[key]);
+          }
+        }
+      });
+
       if (id) {
-        await api.patch(`/admin/projects/${id}/`, project);
+        await api.patch(`/admin/projects/${id}/`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
       } else {
-        await api.post("/admin/projects/", project);
+        await api.post("/admin/projects/", formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
       }
       navigate("/admin/projects");
     } catch (error) {
@@ -93,8 +125,41 @@ export default function AdminProjectForm() {
         <form onSubmit={save} className="rounded-2xl border border-surface-800/50 bg-surface-900/50 p-8 backdrop-blur-xl">
           <div className="space-y-6">
             <Input label="Title" name="title" value={project.title} onChange={handleChange} placeholder="Project title" required />
+            
+            {/* Image Upload */}
+            <div>
+              <label className="mb-2 block text-sm font-medium text-surface-300">
+                Project Image
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-3 text-surface-100 file:mr-4 file:rounded-md file:border-0 file:bg-accent-500 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-surface-950 hover:file:bg-accent-400"
+              />
+              {imagePreview && (
+                <div className="mt-4 relative w-full h-48 rounded-lg overflow-hidden border border-surface-700">
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+            </div>
+
             <Input label="Short Description" name="short_description" value={project.short_description} onChange={handleChange} placeholder="Brief description" />
             <Textarea label="Full Description" name="description" value={project.description} onChange={handleChange} placeholder="Detailed project description" />
+            
+            <Textarea 
+              label="Use Cases / Key Features" 
+              name="use_cases" 
+              value={project.use_cases} 
+              onChange={handleChange} 
+              placeholder="Feature 1, Feature 2, Feature 3"
+              rows="3"
+            />
+            
             <Input label="Tech Stack" name="tech_stack" value={project.tech_stack} onChange={handleChange} placeholder="e.g., React, Node.js, MongoDB" />
 
             <div className="grid gap-6 md:grid-cols-2">

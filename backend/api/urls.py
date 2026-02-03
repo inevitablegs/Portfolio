@@ -6,6 +6,8 @@ from .views import ProjectPublicView, ProjectAdminView
 from .views import (
     SkillStackPublicView,
     SkillStackAdminView,
+    SkillPublicView,
+    SkillAdminView,
 )
 
 from .views import ExperiencePublicView, AchievementPublicView, CertificationPublicView, ExperienceAdminView, CertificationAdminView, AchievementAdminView
@@ -29,11 +31,15 @@ urlpatterns = [
     path("admin/projects/", ProjectAdminView.as_view()),
     path("admin/projects/<int:pk>/", ProjectAdminView.as_view()),
     
-    # Public
+    # Public - Skills
     path("skills/", SkillStackPublicView.as_view()),
+    path("skills-new/", SkillPublicView.as_view()),
 
-    # Admin CMS
+    # Admin CMS - Skills
     path("admin/skills/", SkillStackAdminView.as_view()),
+    path("admin/skills-new/", SkillAdminView.as_view()),
+    path("admin/skills-new/<int:pk>/", SkillAdminView.as_view()),
+    
     # Public
     path("experience/", ExperiencePublicView.as_view()),
     path("achievements/", AchievementPublicView.as_view()),

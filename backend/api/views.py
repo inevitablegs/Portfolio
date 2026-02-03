@@ -165,9 +165,11 @@ class ProjectPublicView(APIView):
     
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsSuperUser
+from rest_framework.parsers import MultiPartParser, FormParser
 
 class ProjectAdminView(APIView):
     permission_classes = [IsAuthenticated, IsSuperUser]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get(self, request):
         projects = Project.objects.all().order_by("order")
@@ -193,8 +195,8 @@ class ProjectAdminView(APIView):
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import SkillStack
-from .serializers import SkillStackSerializer
+from .models import SkillStack, Skill
+from .serializers import SkillStackSerializer, SkillSerializer
 
 class SkillStackPublicView(APIView):
     authentication_classes = []
@@ -205,6 +207,15 @@ class SkillStackPublicView(APIView):
         if not stack:
             return Response({})
         return Response(SkillStackSerializer(stack).data)
+
+
+class SkillPublicView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        skills = Skill.objects.all()
+        return Response(SkillSerializer(skills, many=True).data)
 
 
 from rest_framework.permissions import IsAuthenticated
@@ -238,6 +249,31 @@ class SkillStackAdminView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+class SkillAdminView(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+
+    def get(self, request):
+        skills = Skill.objects.all()
+        return Response(SkillSerializer(skills, many=True).data)
+
+    def post(self, request):
+        serializer = SkillSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=201)
+
+    def patch(self, request, pk):
+        skill = Skill.objects.get(pk=pk)
+        serializer = SkillSerializer(skill, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def delete(self, request, pk):
+        Skill.objects.filter(pk=pk).delete()
+        return Response({"deleted": True})
 
 
 # backend/api/views.py

@@ -8,6 +8,7 @@ import AdminHeroEdit from "./pages/AdminHeroEdit";
 import AdminProjects from "./pages/AdminProjects";
 import AdminProjectForm from "./pages/AdminProjectForm";
 import AdminSkillsEdit from "./pages/AdminSkillsEdit";
+import AdminSkillsNew from "./pages/AdminSkillsNew";
 
 import AdminExperience from "./pages/AdminExperience";
 import AdminAchievements from "./pages/AdminAchievements";
@@ -28,6 +29,7 @@ export default function Router() {
       <Route path="/admin/projects/new" element={<AdminProjectForm />} />
       <Route path="/admin/projects/:id" element={<AdminProjectForm />} />
       <Route path="/admin/skills" element={<AdminSkillsEdit />} />
+      <Route path="/admin/skills-new" element={<AdminSkillsNew />} />
       <Route path="/admin/experience" element={<AdminExperience />} />
       <Route path="/admin/achievements" element={<AdminAchievements />} />
       <Route path="/admin/certifications" element={<AdminCertifications />} />

@@ -1,6 +1,6 @@
 # api/serializers.py
 from rest_framework import serializers
-from .models import Profile, Hero, Project, SkillStack
+from .models import Profile, Hero, Project, SkillStack, Skill
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,6 +22,15 @@ class SkillStackSerializer(serializers.ModelSerializer):
         model = SkillStack
         fields = "__all__"
         read_only_fields = ("id", "updated_at")
+
+
+class SkillSerializer(serializers.ModelSerializer):
+    skill_type_display = serializers.CharField(source='get_skill_type_display', read_only=True)
+    
+    class Meta:
+        model = Skill
+        fields = "__all__"
+        read_only_fields = ("id", "created_at", "updated_at")
         
         
 # backend/api/serializers.py

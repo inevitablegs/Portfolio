@@ -40,10 +40,17 @@ export default function AdminDashboard() {
       color: "from-purple-500/20 to-purple-600/20 border-purple-500/30"
     },
     {
-      title: "Skills & Tech Stack",
-      description: "Edit your technical skills and tools",
-      icon: "🛠",
+      title: "Skills (Legacy)",
+      description: "Edit old comma-separated skills format",
+      icon: "📝",
       link: "/admin/skills",
+      color: "from-gray-500/20 to-gray-600/20 border-gray-500/30"
+    },
+    {
+      title: "Skills & Proficiency",
+      description: "Manage skills with types and proficiency levels",
+      icon: "🛠",
+      link: "/admin/skills-new",
       color: "from-green-500/20 to-green-600/20 border-green-500/30"
     },
     {
@@ -130,7 +137,7 @@ export default function AdminDashboard() {
         <div className="mb-12 grid gap-6 md:grid-cols-3">
           <StatCard 
             label="Total Sections" 
-            value="8" 
+            value="9" 
             icon="📊"
             gradient="from-accent-500 to-accent-600"
           />
