@@ -83,16 +83,23 @@ CORS_ALLOW_ALL_ORIGINS = True
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_URI = os.getenv("DB_URI")
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'portfolio_db',
+#         'USER': 'ganesh',
+#         'PASSWORD': f"{DB_PASSWORD}",
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
+import dj_database_url
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'portfolio_db',
-        'USER': 'ganesh',
-        'PASSWORD': f"{DB_PASSWORD}",
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.parse(DB_URI)
 }
 
 
