@@ -86,7 +86,7 @@ function ProjectCard({ project, index }) {
       {project.image && (
         <div className="relative h-48 w-full overflow-hidden bg-surface-900/50">
           <img
-            src={`${BASE_URL}${project.image}`}
+            src={project.image}
             alt={project.title}
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
           />

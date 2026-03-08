@@ -19,7 +19,7 @@ export default function ProfileAssets() {
       {assets.profile_photo && (
         <div className="relative">
           <img
-            src={`${BASE_URL}${assets.profile_photo}`}
+            src={assets.profile_photo}
             alt="Profile"
             className="h-24 w-24 rounded-2xl border-2 border-accent-500/30 object-cover shadow-glow-sm"
           />
@@ -30,7 +30,7 @@ export default function ProfileAssets() {
 
       {assets.resume && (
         <a
-          href={`${BASE_URL}${assets.resume}`}
+          href={assets.resume}
           target="_blank"
           rel="noopener noreferrer"
           className="btn-secondary"

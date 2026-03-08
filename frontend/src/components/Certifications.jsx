@@ -50,7 +50,7 @@ function CertCard({ cert, index }) {
       <div className="relative h-32 w-full bg-surface-900/50 flex items-center justify-center overflow-hidden">
         {cert.image ? (
           <img
-            src={`${BASE_URL}${cert.image}`}
+            src={cert.image}
             alt={cert.name}
             className="h-full w-full object-contain p-4 transition-transform duration-700 group-hover:scale-110"
           />
