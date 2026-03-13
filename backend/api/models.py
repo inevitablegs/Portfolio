@@ -1,5 +1,5 @@
 from django.db import models
-
+from cloudinary.models import CloudinaryField
 # Create your models here.from django.db import models
 
 class Profile(models.Model):
@@ -49,12 +49,7 @@ class Project(models.Model):
         help_text="Project use cases or key features (comma separated)"
     )
     
-    image = models.ImageField(
-        upload_to="projects/",
-        blank=True,
-        null=True,
-        help_text="Project screenshot or thumbnail"
-    )
+    image = CloudinaryField("image")
 
     tech_stack = models.CharField(
         max_length=300,

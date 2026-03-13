@@ -13,9 +13,16 @@ class HeroSerializer(serializers.ModelSerializer):
         fields = "__all__"
         
 class ProjectSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = Project
         fields = "__all__"
+
+    def get_image(self, obj):
+        if obj.image:
+            return obj.image.url
+        return None
         
 class SkillStackSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,16 +57,36 @@ class AchievementSerializer(serializers.ModelSerializer):
         read_only_fields = ("id",)
 
 class CertificationSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = Certification
         fields = "__all__"
         read_only_fields = ("id",)
 
+    def get_image(self, obj):
+        if obj.image:
+            return obj.image.url
+        return None
+
 from rest_framework import serializers
 from .models import ProfileAssets
 
 class ProfileAssetsSerializer(serializers.ModelSerializer):
+    profile_photo = serializers.SerializerMethodField()
+    resume = serializers.SerializerMethodField()
+
     class Meta:
         model = ProfileAssets
         fields = "__all__"
         read_only_fields = ("id", "updated_at")
+
+    def get_profile_photo(self, obj):
+        if obj.profile_photo:
+            return obj.profile_photo.url
+        return None
+
+    def get_resume(self, obj):
+        if obj.resume:
+            return obj.resume.url
+        return None
