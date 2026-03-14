@@ -23,6 +23,14 @@ class ProjectSerializer(serializers.ModelSerializer):
         if obj.image:
             return obj.image.url
         return None
+    
+    def get_image_url(self, obj):
+        if obj.image:
+            return str(obj.image.url)  # Explicitly convert to string
+        return None
+    
+    
+    
         
 class SkillStackSerializer(serializers.ModelSerializer):
     class Meta:
