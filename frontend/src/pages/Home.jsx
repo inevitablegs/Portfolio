@@ -100,7 +100,7 @@ export default function Home() {
             <Link to="/profile" title="Profile">
               {assets?.profile_photo ? (
                 <img
-                  src={`${BASE_URL}${assets.profile_photo}`}
+                  src={assets.profile_photo}
                   alt="Profile"
                   className="h-9 w-9 rounded-full border-2 border-surface-700 object-cover transition hover:border-accent-400 hover:shadow-glow-sm"
                 />

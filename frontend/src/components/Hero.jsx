@@ -86,7 +86,7 @@ export default function Hero() {
             
             {assets?.profile_photo ? (
               <img
-                src={`${BASE_URL}${assets.profile_photo}`}
+                src={assets.profile_photo}
                 alt="Profile"
                 className="relative h-[17rem] w-[17rem] rounded-full object-cover"
               />

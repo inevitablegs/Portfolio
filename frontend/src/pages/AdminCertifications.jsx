@@ -1,9 +1,8 @@
+// frontend/src/pages/AdminCertifications.jsx
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout";
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 
 export default function AdminCertifications() {
   const [items, setItems] = useState([]);
@@ -48,7 +47,8 @@ export default function AdminCertifications() {
   const startEdit = (item) => {
     setEditingId(item.id);
     setEditData({ ...item });
-    setImagePreview(item.image ? `${BASE_URL}${item.image}` : null);
+    // FIX: Just use item.image, don't prepend BASE_URL for Cloudinary
+    setImagePreview(item.image ? item.image : null);
   };
 
   const cancelEdit = () => {
@@ -124,7 +124,6 @@ function CertCard({ item, isEditing, editData, imagePreview, onEdit, onDelete, o
     return (
       <div className="rounded-xl border border-accent-500/50 bg-gradient-to-br from-surface-900/90 to-surface-800/90 p-6 backdrop-blur-xl shadow-glow-md">
         <div className="space-y-4">
-          {/* Image Upload */}
           <div>
             <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-accent-400">
               Certificate Badge/Logo
@@ -154,8 +153,7 @@ function CertCard({ item, isEditing, editData, imagePreview, onEdit, onDelete, o
               type="text"
               value={editData.name}
               onChange={(e) => onFieldChange('name', e.target.value)}
-              className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-2 text-sm text-surface-100 placeholder-surface-500 transition focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
-              placeholder="e.g., AWS Certified Developer"
+              className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-2 text-sm text-surface-100 placeholder-surface-500"
             />
           </div>
 
@@ -165,32 +163,20 @@ function CertCard({ item, isEditing, editData, imagePreview, onEdit, onDelete, o
               type="text"
               value={editData.issuer}
               onChange={(e) => onFieldChange('issuer', e.target.value)}
-              className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-2 text-sm text-surface-100 placeholder-surface-500 transition focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
-              placeholder="e.g., Amazon Web Services"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-xs font-medium text-surface-400">Certificate URL (Optional)</label>
-            <input
-              type="url"
-              value={editData.certificate_url}
-              onChange={(e) => onFieldChange('certificate_url', e.target.value)}
-              className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-2 text-sm text-surface-100 placeholder-surface-500 transition focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
-              placeholder="https://..."
+              className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-2 text-sm text-surface-100 placeholder-surface-500"
             />
           </div>
 
           <div className="flex gap-2 pt-2">
             <button
               onClick={onSave}
-              className="flex-1 rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 px-4 py-2 text-sm font-semibold text-surface-950 shadow-lg transition hover:from-accent-400 hover:to-accent-500 hover:shadow-accent-500/50"
+              className="flex-1 rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 px-4 py-2 text-sm font-semibold text-surface-950"
             >
               Save
             </button>
             <button
               onClick={onCancel}
-              className="rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-2 text-sm font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
+              className="rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-2 text-sm font-semibold text-surface-300"
             >
               Cancel
             </button>
@@ -201,12 +187,11 @@ function CertCard({ item, isEditing, editData, imagePreview, onEdit, onDelete, o
   }
 
   return (
-    <div className="group relative rounded-xl border border-surface-800/50 bg-surface-900/50 overflow-hidden backdrop-blur-xl transition-all duration-300 hover:border-accent-500/30 hover:shadow-glow-sm">
-      {/* Certificate Image/Icon */}
+    <div className="group relative rounded-xl border border-surface-800/50 bg-surface-900/50 overflow-hidden backdrop-blur-xl">
       <div className="relative h-32 bg-surface-900/50 flex items-center justify-center">
         {item.image ? (
           <img
-            src={`${BASE_URL}${item.image}`}
+            src={item.image}
             alt={item.name}
             className="h-full w-full object-contain p-4"
           />
@@ -217,39 +202,13 @@ function CertCard({ item, isEditing, editData, imagePreview, onEdit, onDelete, o
         )}
       </div>
 
-      {/* Content */}
       <div className="p-4">
-        <h3 className="text-sm font-bold text-surface-100 line-clamp-2 min-h-[2.5rem]">
-          {item.name}
-        </h3>
+        <h3 className="text-sm font-bold text-surface-100 line-clamp-2 min-h-[2.5rem]">{item.name}</h3>
         <p className="mt-1 text-xs text-surface-400">{item.issuer}</p>
-        
-        {item.certificate_url && (
-          <a
-            href={item.certificate_url}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-2 inline-flex items-center gap-1 text-xs text-accent-400 hover:text-accent-300"
-          >
-            <span>🔗</span>
-            View Certificate
-          </a>
-        )}
 
-        {/* Action Buttons */}
         <div className="mt-4 flex gap-2">
-          <button
-            onClick={() => onEdit(item)}
-            className="flex-1 rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-1.5 text-xs font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
-          >
-            Edit
-          </button>
-          <button
-            onClick={() => onDelete(item.id)}
-            className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-400 transition hover:border-red-500/50 hover:bg-red-500/20"
-          >
-            Delete
-          </button>
+          <button onClick={() => onEdit(item)} className="flex-1 rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-1.5 text-xs font-semibold text-surface-300">Edit</button>
+          <button onClick={() => onDelete(item.id)} className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-400">Delete</button>
         </div>
       </div>
     </div>
