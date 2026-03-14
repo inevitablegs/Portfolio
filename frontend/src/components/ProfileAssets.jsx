@@ -1,6 +1,6 @@
+// frontend/src/components/ProfileAssets.jsx
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function ProfileAssets() {
   const [assets, setAssets] = useState(null);
@@ -23,7 +23,6 @@ export default function ProfileAssets() {
             alt="Profile"
             className="h-24 w-24 rounded-2xl border-2 border-accent-500/30 object-cover shadow-glow-sm"
           />
-          {/* Glow effect */}
           <div className="absolute inset-0 -z-10 rounded-2xl bg-accent-500/20 blur-xl" />
         </div>
       )}

@@ -1,189 +1,184 @@
+// frontend/src/pages/AdminProfileAssets.jsx
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import AdminLayout from "../components/AdminLayout";
 
 export default function AdminProfileAssets() {
-  const [resume, setResume] = useState(null);
-  const [photo, setPhoto] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
-  const [currentAssets, setCurrentAssets] = useState(null);
-  const [uploading, setUploading] = useState(false);
+  const [assets, setAssets] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [profilePhotoFile, setProfilePhotoFile] = useState(null);
+  const [resumeFile, setResumeFile] = useState(null);
+  const [previewPhoto, setPreviewPhoto] = useState(null);
   const navigate = useNavigate();
 
-  const save = async () => {
-    if (!resume && !photo) {
-      alert("Please select at least one file to upload");
-      return;
-    }
-
-    setUploading(true);
-    const form = new FormData();
-    if (resume) form.append("resume", resume);
-    if (photo) form.append("profile_photo", photo);
-
+  const load = async () => {
     try {
-      const response = await api.patch("/admin/profile-assets/", form, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      alert("Updated successfully");
-      setResume(null);
-      setPhoto(null);
-      setPhotoPreview(null);
-      setCurrentAssets(response.data);
+      const res = await api.get("/admin/profile-assets/");
+      setAssets(res.data);
+      if (res.data.profile_photo) {
+        setPreviewPhoto(res.data.profile_photo);
+      }
     } catch (error) {
-      alert("Failed to upload files");
+      navigate("/admin/login");
     } finally {
-      setUploading(false);
+      setLoading(false);
     }
   };
 
-  const handlePhotoChange = (e) => {
+  useEffect(() => {
+    load();
+  }, []);
+
+  const handleProfilePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPhoto(file);
+      setProfilePhotoFile(file);
+      // Create preview URL
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPhotoPreview(reader.result);
+        setPreviewPhoto(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  useEffect(() => {
-    api.get("/admin/profile-assets/")
-      .then(res => setCurrentAssets(res.data))
-      .catch(() => navigate("/admin/login"));
-  }, []);
+  const handleResumeChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setResumeFile(file);
+    }
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    const formData = new FormData();
+    
+    if (profilePhotoFile) {
+      formData.append("profile_photo", profilePhotoFile);
+    }
+    
+    if (resumeFile) {
+      formData.append("resume", resumeFile);
+    }
+
+    try {
+      const response = await api.patch("/admin/profile-assets/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setAssets(response.data);
+      setProfilePhotoFile(null);
+      setResumeFile(null);
+      alert("Assets updated successfully!");
+      load(); // Reload to get fresh URLs
+    } catch (error) {
+      console.error("Save error:", error);
+      alert("Failed to update assets");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <AdminLayout title="Profile Assets">
+        <div className="flex items-center justify-center p-12">
+          <div className="text-surface-400">Loading...</div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-surface-950">
-      {/* Background effects */}
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 opacity-100 [background-image:linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] [background-size:48px_48px]" />
-        <div className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-accent-500/10 blur-[120px]" />
+    <AdminLayout title="Profile Assets">
+      <div className="max-w-2xl mx-auto space-y-8">
+        {/* Profile Photo Section */}
+        <div className="rounded-xl border border-surface-800/50 bg-surface-900/50 p-6 backdrop-blur-xl">
+          <h3 className="text-lg font-semibold text-surface-100 mb-4">
+            Profile Photo
+          </h3>
+          
+          {/* Preview */}
+          {previewPhoto && (
+            <div className="mb-4 flex justify-center">
+              <div className="relative">
+                <img
+                  src={previewPhoto}
+                  alt="Profile Preview"
+                  className="h-32 w-32 rounded-2xl border-2 border-accent-500/30 object-cover"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Upload */}
+          <div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleProfilePhotoChange}
+              className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-2 text-sm text-surface-100 file:mr-3 file:rounded-md file:border-0 file:bg-accent-500 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-surface-950 hover:file:bg-accent-400"
+            />
+            <p className="mt-1 text-xs text-surface-500">
+              Recommended: Square image, at least 300x300px
+            </p>
+          </div>
+        </div>
+
+        {/* Resume Section */}
+        <div className="rounded-xl border border-surface-800/50 bg-surface-900/50 p-6 backdrop-blur-xl">
+          <h3 className="text-lg font-semibold text-surface-100 mb-4">
+            Resume / CV
+          </h3>
+          
+          {/* Current Resume Link */}
+          {assets?.resume && (
+            <div className="mb-4 p-3 bg-surface-800/30 rounded-lg">
+              <p className="text-sm text-surface-400 mb-2">Current Resume:</p>
+              <a
+                href={assets.resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-accent-400 hover:text-accent-300"
+              >
+                <span>📄</span>
+                View Current Resume
+              </a>
+            </div>
+          )}
+
+          {/* Upload New Resume */}
+          <div>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleResumeChange}
+              className="w-full rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-2 text-sm text-surface-100 file:mr-3 file:rounded-md file:border-0 file:bg-accent-500 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-surface-950 hover:file:bg-accent-400"
+            />
+            <p className="mt-1 text-xs text-surface-500">
+              Accepted formats: PDF, DOC, DOCX
+            </p>
+          </div>
+        </div>
+
+        {/* Save Button */}
+        <div className="flex justify-end">
+          <button
+            onClick={handleSave}
+            disabled={saving || (!profilePhotoFile && !resumeFile)}
+            className={`rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 px-6 py-3 text-sm font-semibold text-surface-950 shadow-lg transition hover:shadow-accent-500/50 ${
+              saving || (!profilePhotoFile && !resumeFile)
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
+          >
+            {saving ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
       </div>
-
-      {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-surface-800/50 bg-surface-950/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <button
-            onClick={() => navigate("/admin/dashboard")}
-            className="flex items-center gap-2 text-sm text-surface-400 transition hover:text-accent-400"
-          >
-            ← Back to Dashboard
-          </button>
-          <button
-            onClick={() => {
-              localStorage.clear();
-              navigate("/");
-            }}
-            className="rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-2 text-xs font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
-          >
-            Logout
-          </button>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="mx-auto max-w-3xl px-6 py-12">
-        <h1 className="mb-8 text-3xl font-bold tracking-tight text-surface-100">
-          Resume & Profile Photo
-        </h1>
-
-        <div className="rounded-2xl border border-surface-800/50 bg-surface-900/50 p-8 backdrop-blur-xl">
-          <div className="space-y-6">
-            {/* Resume Upload */}
-            <div>
-              <label className="mb-3 block text-sm font-medium text-surface-300">
-                Resume (PDF)
-              </label>
-              <div className="relative">
-                <input
-                  type="file"
-                  accept="application/pdf"
-                  onChange={e => setResume(e.target.files[0])}
-                  className="block w-full rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-3 text-sm text-surface-100 file:mr-4 file:rounded-lg file:border-0 file:bg-accent-500/20 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-accent-400 hover:file:bg-accent-500/30"
-                />
-              </div>
-              {resume && (
-                <p className="mt-2 text-sm text-accent-400">
-                  Selected: {resume.name}
-                </p>
-              )}
-            </div>
-
-            {/* Profile Photo Upload */}
-            <div>
-              <label className="mb-3 block text-sm font-medium text-surface-300">
-                Profile Photo
-              </label>
-              
-              {/* Current and Preview Photos */}
-              <div className="mb-4 flex flex-wrap gap-4">
-                {currentAssets?.profile_photo && (
-                  <div>
-                    <p className="mb-2 text-xs text-surface-500">Current Photo</p>
-                    <img
-                      src={`${import.meta.env.VITE_API_BASE_URL}${currentAssets.profile_photo}`}
-                      alt="Current profile"
-                      className="h-24 w-24 rounded-xl border-2 border-surface-700 object-cover"
-                    />
-                  </div>
-                )}
-                {photoPreview && (
-                  <div>
-                    <p className="mb-2 text-xs text-accent-400">New Photo Preview</p>
-                    <img
-                      src={photoPreview}
-                      alt="Preview"
-                      className="h-24 w-24 rounded-xl border-2 border-accent-500 object-cover shadow-glow-sm"
-                    />
-                  </div>
-                )}
-              </div>
-              
-              <div className="relative">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoChange}
-                  className="block w-full rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-3 text-sm text-surface-100 file:mr-4 file:rounded-lg file:border-0 file:bg-accent-500/20 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-accent-400 hover:file:bg-accent-500/30"
-                />
-              </div>
-              {photo && (
-                <p className="mt-2 text-sm text-accent-400">
-                  Selected: {photo.name}
-                </p>
-              )}
-            </div>
-
-            {/* Upload Info */}
-            <div className="rounded-lg border border-surface-700/50 bg-surface-800/30 p-4">
-              <p className="text-sm text-surface-400">
-                <strong className="text-surface-300">Note:</strong> Upload a PDF resume and a profile photo (JPG, PNG). 
-                The files will replace any existing files.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-8 flex gap-4">
-            <button
-              onClick={save}
-              disabled={uploading}
-              className="rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 px-6 py-2.5 text-sm font-semibold text-surface-950 shadow-lg transition hover:shadow-accent-500/50 disabled:opacity-50"
-            >
-              {uploading ? "Uploading..." : "Upload Files"}
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate("/admin/dashboard")}
-              className="rounded-lg border border-surface-700 bg-surface-800/50 px-6 py-2.5 text-sm font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </main>
-    </div>
+    </AdminLayout>
   );
 }

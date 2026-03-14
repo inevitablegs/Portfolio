@@ -83,7 +83,7 @@ from .models import ProfileAssets
 class ProfileAssetsSerializer(serializers.ModelSerializer):
     profile_photo = serializers.SerializerMethodField()
     resume = serializers.SerializerMethodField()
-
+    
     class Meta:
         model = ProfileAssets
         fields = "__all__"

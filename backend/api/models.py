@@ -153,16 +153,18 @@ class Certification(models.Model):
         return self.name
 
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 class ProfileAssets(models.Model):
-    resume = models.FileField(
-        upload_to="resume/",
+    resume = CloudinaryField(
+        "resume",
+        resource_type="raw",  # Important for non-image files like PDFs
         blank=True,
         null=True
     )
 
-    profile_photo = models.ImageField(
-        upload_to="profile/",
+    profile_photo = CloudinaryField(
+        "profile_photo",
         blank=True,
         null=True
     )
@@ -171,3 +173,13 @@ class ProfileAssets(models.Model):
 
     def __str__(self):
         return "Profile Assets"
+    
+    def get_profile_photo_url(self):
+        if self.profile_photo:
+            return self.profile_photo.url
+        return None
+    
+    def get_resume_url(self):
+        if self.resume:
+            return self.resume.url
+        return None
