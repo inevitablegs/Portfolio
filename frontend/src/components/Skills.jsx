@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+import { fetchWithCache, getCachedData } from "../api/cache";
 
 export default function Skills() {
-  const [skills, setSkills] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [skills, setSkills] = useState(() => getCachedData("/skills-new/") || []);
+  const [loading, setLoading] = useState(!skills.length);
 
   useEffect(() => {
-    api.get("/skills-new/")
-      .then(res => {
-        setSkills(res.data);
-      })
+    fetchWithCache("/skills-new/", setSkills)
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);

@@ -1,12 +1,12 @@
 // src/components/Achievements.jsx
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+import { fetchWithCache, getCachedData } from "../api/cache";
 
 export default function Achievements() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(() => getCachedData("/achievements/") || []);
 
   useEffect(() => {
-    api.get("/achievements/").then(res => setItems(res.data)).catch(() => {});
+    fetchWithCache("/achievements/", setItems).catch(() => {});
   }, []);
 
   if (!items.length) return null;

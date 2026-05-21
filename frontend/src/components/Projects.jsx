@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+import { fetchWithCache, getCachedData } from "../api/cache";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Projects() {
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState(() => getCachedData("/projects/") || []);
+  const [loading, setLoading] = useState(!projects.length);
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    api.get("/projects/")
-      .then(res => setProjects(res.data))
+    fetchWithCache("/projects/", setProjects)
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);

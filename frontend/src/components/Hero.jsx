@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+import { fetchWithCache, getCachedData } from "../api/cache";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Hero() {
-  const [hero, setHero] = useState({
+  const [hero, setHero] = useState(() => getCachedData("/hero/") || {
     name: "Ganesh Sonawane",
     tagline: "Software Developer · Django · AI · Unity",
     intro: "I build practical, scalable software.",
@@ -12,16 +12,11 @@ export default function Hero() {
     cta_link: "",
   });
 
-  const [assets, setAssets] = useState(null);
+  const [assets, setAssets] = useState(() => getCachedData("/profile-assets/"));
 
   useEffect(() => {
-    api.get("/hero/")
-      .then(res => res.data && setHero(res.data))
-      .catch(() => {});
-    
-    api.get("/profile-assets/")
-      .then(res => setAssets(res.data))
-      .catch(() => {});
+    fetchWithCache("/hero/", setHero).catch(() => {});
+    fetchWithCache("/profile-assets/", setAssets).catch(() => {});
   }, []);
 
   return (

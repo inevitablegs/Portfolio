@@ -1,12 +1,12 @@
 // src/components/Experience.jsx
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+import { fetchWithCache, getCachedData } from "../api/cache";
 
 export default function Experience() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(() => getCachedData("/experience/") || []);
 
   useEffect(() => {
-    api.get("/experience/").then(res => setItems(res.data)).catch(() => {});
+    fetchWithCache("/experience/", setItems).catch(() => {});
   }, []);
 
   if (!items.length) return null;

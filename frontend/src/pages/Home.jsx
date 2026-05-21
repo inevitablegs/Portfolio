@@ -7,16 +7,14 @@ import Skills from "../components/Skills";
 import Achievements from "../components/Achievements";
 import Experience from "../components/Experience";
 import Certifications from "../components/Certifications";
-import api from "../api/axios";
+import { fetchWithCache, getCachedData } from "../api/cache";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Home() {
-  const [assets, setAssets] = useState(null);
+  const [assets, setAssets] = useState(() => getCachedData("/profile-assets/"));
 
   useEffect(() => {
-    api.get("/profile-assets/")
-      .then(res => setAssets(res.data))
-      .catch(() => {});
+    fetchWithCache("/profile-assets/", setAssets).catch(() => {});
   }, []);
   return (
     <div className="min-h-screen bg-surface-950 text-surface-100">

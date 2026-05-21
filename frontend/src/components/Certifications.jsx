@@ -1,12 +1,12 @@
 // src/components/Certifications.jsx
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+import { fetchWithCache, getCachedData } from "../api/cache";
 
 export default function Certifications() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(() => getCachedData("/certifications/") || []);
 
   useEffect(() => {
-    api.get("/certifications/").then(res => setItems(res.data)).catch(() => {});
+    fetchWithCache("/certifications/", setItems).catch(() => {});
   }, []);
 
   if (!items.length) return null;
