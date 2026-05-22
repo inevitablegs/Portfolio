@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -7,7 +8,11 @@ from rest_framework_simplejwt.views import (
 
 from api.views import MeView
 
+def ping(request):
+    return HttpResponse("Backend is awake and running!")
+
 urlpatterns = [
+    path('', ping, name='ping'),
     path('api/token/', TokenObtainPairView.as_view()),
     path('api/token/refresh/', TokenRefreshView.as_view()),
     path("admin/", admin.site.urls),
