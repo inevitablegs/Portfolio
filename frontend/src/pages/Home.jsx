@@ -7,6 +7,7 @@ import Skills from "../components/Skills";
 import Achievements from "../components/Achievements";
 import Experience from "../components/Experience";
 import Certifications from "../components/Certifications";
+import ThemeToggle from "../components/ThemeToggle";
 import { fetchWithCache, getCachedData } from "../api/cache";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -21,7 +22,7 @@ export default function Home() {
       {/* Futuristic background */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-100 [background-image:linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] [background-size:48px_48px]" />
+        <div className="absolute inset-0 opacity-100 bg-grid-pattern [background-size:48px_48px]" />
         {/* Glow orbs */}
         <div className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-accent-500/10 blur-[120px]" />
         <div className="absolute -right-40 top-1/2 h-80 w-80 rounded-full bg-glow-violet/10 blur-[100px]" />
@@ -108,6 +109,7 @@ export default function Home() {
                 </div>
               )}
             </Link>
+            <ThemeToggle />
             <Link
               to="/admin/login"
               className="rounded-lg border border-surface-700 bg-surface-800/50 px-4 py-2 text-xs font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
