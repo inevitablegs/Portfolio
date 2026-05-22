@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { fetchWithCache, getCachedData } from "../api/cache";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -58,15 +59,13 @@ export default function Hero() {
               Say Hello
             </a>
             {assets?.resume && (
-              <a
-                href={`${BASE_URL}${assets.resume}`}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/resume"
                 className="btn-primary"
               >
                 <span>📄</span>
                 Resume
-              </a>
+              </Link>
             )}
           </div>
         </div>

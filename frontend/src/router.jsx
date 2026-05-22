@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import Profile from "./pages/Profile";
+import Resume from "./pages/Resume";
 import AdminProfileEdit from "./pages/AdminProfileEdit";
 import AdminHeroEdit from "./pages/AdminHeroEdit";
 import AdminProjects from "./pages/AdminProjects";
@@ -21,6 +22,7 @@ export default function Router() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/resume" element={<Resume />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/profile" element={<AdminProfileEdit />} />

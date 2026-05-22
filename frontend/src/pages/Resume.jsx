@@ -40,6 +40,10 @@ export default function Resume() {
     );
   }
 
+  const resumeUrl = assets.resume.startsWith("http://") || assets.resume.startsWith("https://")
+    ? assets.resume
+    : `${BASE_URL}${assets.resume}`;
+
   return (
     <div className="min-h-screen bg-surface-950 text-surface-100">
       {/* Background effects */}
@@ -57,7 +61,7 @@ export default function Resume() {
           </Link>
           <div className="flex items-center gap-3">
             <a
-              href={`${BASE_URL}${assets.resume}`}
+              href={resumeUrl}
               download
               className="rounded-lg border border-accent-500/30 bg-accent-500/10 px-4 py-2 text-xs font-semibold text-accent-400 transition-all hover:border-accent-500/50 hover:bg-accent-500/20"
             >
@@ -79,7 +83,7 @@ export default function Resume() {
             
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href={`${BASE_URL}${assets.resume}`}
+                href={resumeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 px-6 py-3 font-semibold text-surface-950 shadow-lg transition hover:shadow-accent-500/50 hover:scale-105"
@@ -88,7 +92,7 @@ export default function Resume() {
                 Open PDF in New Tab
               </a>
               <a
-                href={`${BASE_URL}${assets.resume}`}
+                href={resumeUrl}
                 download
                 className="flex items-center gap-2 rounded-lg border border-surface-700 bg-surface-800/50 px-6 py-3 font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400 hover:scale-105"
               >
@@ -100,7 +104,7 @@ export default function Resume() {
             {/* Embedded viewer */}
             <div className="rounded-lg border border-surface-700/50 overflow-hidden">
               <embed
-                src={`${BASE_URL}${assets.resume}#toolbar=1&navpanes=0&scrollbar=1`}
+                src={`${resumeUrl}#toolbar=1&navpanes=0&scrollbar=1`}
                 type="application/pdf"
                 className="w-full"
                 style={{ height: "calc(100vh - 350px)", minHeight: "700px" }}

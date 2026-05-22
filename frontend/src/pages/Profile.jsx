@@ -59,7 +59,7 @@ export default function Profile() {
             {/* Avatar */}
             {assets?.profile_photo ? (
               <img
-                src={`${BASE_URL}${assets.profile_photo}`}
+                src={assets.profile_photo.startsWith("http://") || assets.profile_photo.startsWith("https://") ? assets.profile_photo : `${BASE_URL}${assets.profile_photo}`}
                 alt={profile.name}
                 className="h-24 w-24 flex-shrink-0 rounded-2xl border-2 border-accent-500/30 object-cover shadow-glow-md"
               />
