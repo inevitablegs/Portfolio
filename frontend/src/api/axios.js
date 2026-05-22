@@ -12,4 +12,18 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Automatically redirect to login if token is expired or unauthorized
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      if (window.location.pathname.includes("/admin")) {
+        localStorage.clear();
+        window.location.href = "/admin/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

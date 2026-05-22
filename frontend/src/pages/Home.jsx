@@ -141,7 +141,7 @@ export default function Home() {
               <InfoCard
                 icon="💼"
                 label="Focus"
-                value="Full-Stack Development"
+                value="Real Worls AI Solutions"
               />
             </div>
           </div>
@@ -159,12 +159,12 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="font-semibold text-surface-100">
-                    B.E. / B.Tech – Engineering
+                    B.E. – In Computer Engineering
                   </p>
                   <p className="mt-1 text-sm text-surface-400">
-                    Dummy University
+                    Government College Of Engineering and Research, Avasari (Khurd)
                   </p>
-                  <p className="mt-1 text-xs text-surface-500">2022 – 2026</p>
+                  <p className="mt-1 text-xs text-surface-500">2023 – 2027</p>
                 </div>
               </div>
               <div className="flex items-start gap-4 rounded-xl border border-surface-700/50 bg-surface-800/50 p-4">
@@ -176,9 +176,9 @@ export default function Home() {
                     Higher Secondary (12th)
                   </p>
                   <p className="mt-1 text-sm text-surface-400">
-                    Dummy Junior College
+                    Shri Bhanoba Vidyalaya, Kusegaon
                   </p>
-                  <p className="mt-1 text-xs text-surface-500">2020 – 2022</p>
+                  <p className="mt-1 text-xs text-surface-500">2021 – 2023</p>
                 </div>
               </div>
             </div>

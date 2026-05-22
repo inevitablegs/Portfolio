@@ -18,12 +18,18 @@ export default function AdminAchievements() {
   useEffect(load, []);
 
   const add = async () => {
-    await api.post("/admin/achievements/", {
-      title: "Achievement title",
-      description: "",
-      order: items.length + 1,
-    });
-    load();
+    try {
+      await api.post("/admin/achievements/", {
+        title: "Achievement title",
+        description: "",
+        order: items.length + 1,
+      });
+      load();
+    } catch (err) {
+      if (err.response?.status !== 401) {
+        alert("Failed to add achievement");
+      }
+    }
   };
 
   const update = async (id, field, value) => {

@@ -16,15 +16,21 @@ export default function AdminExperience() {
   useEffect(load, []);
 
   const add = async () => {
-    await api.post("/admin/experience/", {
-      role: "Role",
-      organization: "Organization",
-      start_date: "2024",
-      end_date: "",
-      description: "Description",
-      order: items.length + 1,
-    });
-    load();
+    try {
+      await api.post("/admin/experience/", {
+        role: "Role",
+        organization: "Organization",
+        start_date: "2024",
+        end_date: "",
+        description: "Description",
+        order: items.length + 1,
+      });
+      load();
+    } catch (err) {
+      if (err.response?.status !== 401) {
+        alert("Failed to add experience");
+      }
+    }
   };
 
   const updateLocal = (id, field, value) => {
