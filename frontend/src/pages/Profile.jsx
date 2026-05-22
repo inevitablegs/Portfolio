@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { Link } from "react-router-dom";
-import ThemeToggle from "../components/ThemeToggle";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Profile() {
@@ -33,7 +32,7 @@ export default function Profile() {
     <div className="min-h-screen bg-surface-950 text-surface-100">
       {/* Background effects */}
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 opacity-100 bg-grid-pattern [background-size:48px_48px]" />
+        <div className="absolute inset-0 opacity-100 [background-image:linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] [background-size:48px_48px]" />
         <div className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-accent-500/10 blur-[120px]" />
         <div className="absolute -right-40 top-1/2 h-80 w-80 rounded-full bg-glow-violet/10 blur-[100px]" />
       </div>
@@ -45,7 +44,6 @@ export default function Profile() {
             ← Back to Home
           </Link>
           <div className="flex items-center gap-3">
-            <ThemeToggle />
             <span className="rounded-lg border border-accent-500/30 bg-accent-500/10 px-3 py-1.5 text-xs font-medium text-accent-400">
               📋 Profile
             </span>

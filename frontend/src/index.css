@@ -1,68 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
-    /* Dark Mode (Default) - Warm Grey/Black theme matching logo.png */
-    --surface-50: 250 250 250;
-    --surface-100: 244 244 245;
-    --surface-200: 228 228 231;
-    --surface-300: 212 212 216;
-    --surface-400: 161 161 170;
-    --surface-500: 113 113 122;
-    --surface-600: 82 82 91;
-    --surface-700: 63 63 70;
-    --surface-800: 39 39 42;
-    --surface-900: 24 24 27;
-    --surface-950: 15 15 15; /* Charcoal black from logo.png */
-
-    /* Amber / Gold Accent Theme from logo.png */
-    --accent-50: 254 252 232;
-    --accent-100: 254 243 199;
-    --accent-200: 253 230 138;
-    --accent-300: 252 211 77;
-    --accent-400: 251 191 36;
-    --accent-500: 245 158 11;
-    --accent-600: 217 119 6;
-    --accent-700: 180 83 9;
-    --accent-800: 146 64 14;
-    --accent-900: 120 53 15;
-    --accent-950: 69 26 3;
-
-    --glow-cyan: 245 158 11;
-    --glow-violet: 217 119 6;
-    --glow-blue: 180 83 9;
-  }
-
-  html.light {
-    /* Light Mode - Inverted Palette with excellent contrast */
-    --surface-50: 15 15 15;
-    --surface-100: 24 24 27;
-    --surface-200: 39 39 42;
-    --surface-300: 63 63 70;
-    --surface-400: 82 82 91;
-    --surface-500: 113 113 122;
-    --surface-600: 161 161 170;
-    --surface-700: 212 212 216;
-    --surface-800: 228 228 231;
-    --surface-900: 244 244 245;
-    --surface-950: 253 253 253; /* Pure/off-white background */
-
-    --accent-50: 69 26 3;
-    --accent-100: 120 53 15;
-    --accent-200: 146 64 14;
-    --accent-300: 180 83 9;
-    --accent-400: 217 119 6; /* Slightly darker gold/orange for readability */
-    --accent-500: 245 158 11;
-    --accent-600: 251 191 36;
-    --accent-700: 252 211 77;
-    --accent-800: 253 230 138;
-    --accent-900: 254 243 199;
-    --accent-950: 254 252 232;
-
-    --glow-cyan: 217 119 6;
-    --glow-violet: 180 83 9;
-    --glow-blue: 146 64 14;
+    --color-bg: 15 23 42;
+    --color-surface: 30 41 59;
+    --color-border: 51 65 85;
+    --color-text: 248 250 252;
+    --color-text-muted: 148 163 184;
+    --color-accent: 34 211 238;
   }
 
   html {
@@ -70,7 +17,7 @@
   }
 
   body {
-    @apply antialiased bg-surface-950 text-surface-100 transition-colors duration-300;
+    @apply antialiased bg-surface-950 text-surface-100;
   }
 }
 
@@ -154,7 +101,7 @@
     background: linear-gradient(
       to right,
       transparent 0%,
-      rgb(var(--glow-cyan) / 0.1) 50%,
+      rgba(34, 211, 238, 0.1) 50%,
       transparent 100%
     );
     background-size: 1000px 100%;
