@@ -39,8 +39,13 @@ export default function AdminAchievements() {
 
   const remove = async (id) => {
     if (!window.confirm("Delete achievement?")) return;
-    await api.delete(`/admin/achievements/${id}/`);
-    load();
+    try {
+      await api.delete(`/admin/achievements/${id}/`);
+      load();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete achievement");
+    }
   };
 
   const updateLocal = (id, field, value) => {
@@ -48,9 +53,14 @@ export default function AdminAchievements() {
   };
 
   const save = async (item) => {
-    await api.patch(`/admin/achievements/${item.id}/`, item);
-    alert("Saved");
-    load();
+    try {
+      await api.patch(`/admin/achievements/${item.id}/`, item);
+      alert("Saved");
+      load();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save achievement");
+    }
   };
 
   return (

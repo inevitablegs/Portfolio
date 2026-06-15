@@ -14,7 +14,21 @@ api.interceptors.request.use((config) => {
 
 // Automatically redirect to login if token is expired or unauthorized
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const method = response.config.method?.toUpperCase();
+    if (method && ["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
+      try {
+        Object.keys(localStorage).forEach((key) => {
+          if (key.startsWith("cache_")) {
+            localStorage.removeItem(key);
+          }
+        });
+      } catch (e) {
+        console.error("Failed to clear localStorage cache:", e);
+      }
+    }
+    return response;
+  },
   (error) => {
     if (error.response && error.response.status === 401) {
       if (window.location.pathname.includes("/admin")) {

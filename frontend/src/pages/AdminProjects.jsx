@@ -22,8 +22,13 @@ export default function AdminProjects() {
   const deleteProject = async (id) => {
     if (!window.confirm("Delete this project?")) return;
 
-    await api.delete(`/admin/projects/${id}/`);
-    loadProjects();
+    try {
+      await api.delete(`/admin/projects/${id}/`);
+      loadProjects();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete project");
+    }
   };
 
   return (

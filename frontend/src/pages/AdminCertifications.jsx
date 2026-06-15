@@ -35,13 +35,18 @@ export default function AdminCertifications() {
 
   const remove = async (id) => {
     if (!window.confirm("Delete this certification?")) return;
-    await api.delete(`/admin/certifications/${id}/`);
-    if (editingId === id) {
-      setEditingId(null);
-      setEditData({});
-      setImagePreview(null);
+    try {
+      await api.delete(`/admin/certifications/${id}/`);
+      if (editingId === id) {
+        setEditingId(null);
+        setEditData({});
+        setImagePreview(null);
+      }
+      load();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete certification");
     }
-    load();
   };
 
   const startEdit = (item) => {
