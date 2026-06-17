@@ -85,13 +85,13 @@ function PackageCard({ pkg, index }) {
       }}
     >
       {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-glow-violet/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-500/5 via-transparent to-glow-violet/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       
       {/* Accent corner */}
-      <div className="absolute right-0 top-0 h-px w-20 bg-gradient-to-l from-blue-400/50 to-transparent transition-all duration-300 group-hover:w-40" />
-      <div className="absolute bottom-0 left-0 h-px w-20 bg-gradient-to-r from-glow-violet/50 to-transparent transition-all duration-300 group-hover:w-40" />
+      <div className="absolute right-0 top-0 pointer-events-none h-px w-20 bg-gradient-to-l from-blue-400/50 to-transparent transition-all duration-300 group-hover:w-40" />
+      <div className="absolute bottom-0 left-0 pointer-events-none h-px w-20 bg-gradient-to-r from-glow-violet/50 to-transparent transition-all duration-300 group-hover:w-40" />
       
-      <div>
+      <div className="relative z-10">
         <div className="flex items-center gap-3">
           <span className="text-3xl transition-transform duration-300 group-hover:scale-110">📦</span>
           <h3 className="text-lg font-bold text-surface-100 transition-colors duration-300 group-hover:text-blue-400">
@@ -121,7 +121,7 @@ function PackageCard({ pkg, index }) {
         )}
       </div>
 
-      <div>
+      <div className="relative z-10">
         {/* Tech Stack tags */}
         {pkg.tech_stack && (
           <div className="mt-4 flex flex-wrap gap-1.5">
