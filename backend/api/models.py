@@ -183,3 +183,27 @@ class ProfileAssets(models.Model):
         if self.resume:
             return self.resume.url
         return None
+
+
+class PythonPackage(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    installation_command = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="e.g. pip install my-package"
+    )
+    pypi_url = models.URLField(blank=True)
+    github_url = models.URLField(blank=True)
+    documentation_url = models.URLField(blank=True)
+    tech_stack = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text="Comma separated tech/libraries used"
+    )
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title

@@ -16,6 +16,8 @@ import AdminAchievements from "./pages/AdminAchievements";
 import AdminCertifications from "./pages/AdminCertifications";
 
 import AdminProfileAssets from "./pages/AdminProfileAssets";
+import AdminPythonPackages from "./pages/AdminPythonPackages";
+import AdminPythonPackageForm from "./pages/AdminPythonPackageForm";
 
 export default function Router() {
   return (
@@ -36,6 +38,9 @@ export default function Router() {
       <Route path="/admin/achievements" element={<AdminAchievements />} />
       <Route path="/admin/certifications" element={<AdminCertifications />} />
       <Route path="/admin/profile-assets" element={<AdminProfileAssets />} />
+      <Route path="/admin/python-packages" element={<AdminPythonPackages />} />
+      <Route path="/admin/python-packages/new" element={<AdminPythonPackageForm />} />
+      <Route path="/admin/python-packages/:id" element={<AdminPythonPackageForm />} />
     </Routes>
   );
 }

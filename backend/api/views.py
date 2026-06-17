@@ -461,3 +461,43 @@ class ProfileAssetsAdminView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+from .models import PythonPackage
+from .serializers import PythonPackageSerializer
+
+class PythonPackagePublicView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        packages = PythonPackage.objects.all().order_by("order", "-created_at")
+        serializer = PythonPackageSerializer(packages, many=True)
+        return Response(serializer.data)
+
+
+class PythonPackageAdminView(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+    parser_classes = [JSONParser, FormParser, MultiPartParser]
+
+    def get(self, request):
+        packages = PythonPackage.objects.all().order_by("order")
+        return Response(PythonPackageSerializer(packages, many=True).data)
+
+    def post(self, request):
+        serializer = PythonPackageSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=201)
+
+    def patch(self, request, pk):
+        package = PythonPackage.objects.get(pk=pk)
+        serializer = PythonPackageSerializer(package, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def delete(self, request, pk):
+        PythonPackage.objects.filter(pk=pk).delete()
+        return Response({"deleted": True})
+

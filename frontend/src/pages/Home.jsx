@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import Hero from "../components/Hero";
 import Projects from "../components/Projects";
+import PythonPackages from "../components/PythonPackages";
 import Skills from "../components/Skills";
 import Achievements from "../components/Achievements";
 import Experience from "../components/Experience";
@@ -46,6 +47,9 @@ export default function Home() {
             </a>
             <a href="#projects" className="transition hover:text-accent-400">
               Projects
+            </a>
+            <a href="#python-packages" className="transition hover:text-accent-400">
+              Packages
             </a>
             <a href="#experience" className="transition hover:text-accent-400">
               Experience
@@ -193,6 +197,11 @@ export default function Home() {
         {/* Projects - Proof of practical skills */}
         <section id="projects" className="mt-12">
           <Projects />
+        </section>
+
+        {/* Python Packages */}
+        <section id="python-packages" className="mt-12">
+          <PythonPackages />
         </section>
 
         {/* Certifications - Full Width */}

@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from .models import (
     Profile, Hero, Project, SkillStack, Skill,
-    Experience, Achievement, Certification, ProfileAssets
+    Experience, Achievement, Certification, ProfileAssets, PythonPackage
 )
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -95,3 +95,9 @@ class ProfileAssetsSerializer(serializers.ModelSerializer):
         else:
             data['resume'] = None
         return data
+
+class PythonPackageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PythonPackage
+        fields = "__all__"
+        read_only_fields = ("id", "created_at", "updated_at")

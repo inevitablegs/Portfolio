@@ -18,6 +18,11 @@ from .views import (
     ProfileAssetsAdminView,
 )
 
+from .views import (
+    PythonPackagePublicView,
+    PythonPackageAdminView,
+)
+
 urlpatterns = [
     path("me/", MeView.as_view()),
     path("profile/", ProfileView.as_view()),
@@ -30,6 +35,10 @@ urlpatterns = [
     path("projects/", ProjectPublicView.as_view()),
     path("admin/projects/", ProjectAdminView.as_view()),
     path("admin/projects/<int:pk>/", ProjectAdminView.as_view()),
+
+    path("python-packages/", PythonPackagePublicView.as_view()),
+    path("admin/python-packages/", PythonPackageAdminView.as_view()),
+    path("admin/python-packages/<int:pk>/", PythonPackageAdminView.as_view()),
     
     # Public - Skills
     path("skills/", SkillStackPublicView.as_view()),
