@@ -12,6 +12,20 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
 // Automatically redirect to login if token is expired or unauthorized
 api.interceptors.response.use(
   (response) => {
@@ -29,11 +43,68 @@ api.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
-    if (error.response && error.response.status === 401) {
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Avoid infinite loop if the refresh request itself fails with 401
+    if (originalRequest.url && originalRequest.url.includes("/token/refresh/")) {
       if (window.location.pathname.includes("/admin")) {
         localStorage.clear();
         window.location.href = "/admin/login";
+      }
+      return Promise.reject(error);
+    }
+
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const refreshToken = localStorage.getItem("refresh");
+
+      if (refreshToken) {
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+          })
+            .then((token) => {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              return api(originalRequest);
+            })
+            .catch((err) => {
+              return Promise.reject(err);
+            });
+        }
+
+        isRefreshing = true;
+
+        try {
+          const res = await axios.post(`${import.meta.env.VITE_API_URL}/token/refresh/`, {
+            refresh: refreshToken,
+          });
+
+          const newAccessToken = res.data.access;
+          localStorage.setItem("access", newAccessToken);
+
+          api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+          processQueue(null, newAccessToken);
+          isRefreshing = false;
+
+          return api(originalRequest);
+        } catch (refreshError) {
+          processQueue(refreshError, null);
+          isRefreshing = false;
+
+          if (window.location.pathname.includes("/admin")) {
+            localStorage.clear();
+            window.location.href = "/admin/login";
+          }
+          return Promise.reject(refreshError);
+        }
+      } else {
+        if (window.location.pathname.includes("/admin")) {
+          localStorage.clear();
+          window.location.href = "/admin/login";
+        }
       }
     }
     return Promise.reject(error);
