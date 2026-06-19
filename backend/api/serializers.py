@@ -1,7 +1,7 @@
 # backend/api/serializers.py
 from rest_framework import serializers
 from .models import (
-    Profile, Hero, Project, SkillStack, Skill,
+    Profile, Hero, Project, SkillStack, Skill, SkillCategory,
     Experience, Achievement, Certification, ProfileAssets, PythonPackage
 )
 
@@ -40,11 +40,24 @@ class SkillStackSerializer(serializers.ModelSerializer):
 
 class SkillSerializer(serializers.ModelSerializer):
     skill_type_display = serializers.CharField(source='get_skill_type_display', read_only=True)
+    category_name = serializers.CharField(source='category.name', read_only=True)
     
     class Meta:
         model = Skill
         fields = "__all__"
         read_only_fields = ("id", "created_at", "updated_at")
+
+class SkillCategorySerializer(serializers.ModelSerializer):
+    skills = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SkillCategory
+        fields = ["id", "name", "order", "skills"]
+        read_only_fields = ("id",)
+
+    def get_skills(self, obj):
+        skills = obj.skills.all().order_by('-proficiency', 'name')
+        return SkillSerializer(skills, many=True).data
 
 class ExperienceSerializer(serializers.ModelSerializer):
     class Meta:

@@ -8,6 +8,8 @@ from .views import (
     SkillStackAdminView,
     SkillPublicView,
     SkillAdminView,
+    SkillCategoryPublicView,
+    SkillCategoryAdminView,
 )
 
 from .views import ExperiencePublicView, AchievementPublicView, CertificationPublicView, ExperienceAdminView, CertificationAdminView, AchievementAdminView
@@ -43,11 +45,14 @@ urlpatterns = [
     # Public - Skills
     path("skills/", SkillStackPublicView.as_view()),
     path("skills-new/", SkillPublicView.as_view()),
+    path("skills-categories/", SkillCategoryPublicView.as_view()),
 
     # Admin CMS - Skills
     path("admin/skills/", SkillStackAdminView.as_view()),
     path("admin/skills-new/", SkillAdminView.as_view()),
     path("admin/skills-new/<int:pk>/", SkillAdminView.as_view()),
+    path("admin/skills-categories/", SkillCategoryAdminView.as_view()),
+    path("admin/skills-categories/<int:pk>/", SkillCategoryAdminView.as_view()),
     
     # Public
     path("experience/", ExperiencePublicView.as_view()),

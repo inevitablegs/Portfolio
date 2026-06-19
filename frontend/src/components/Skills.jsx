@@ -2,36 +2,24 @@ import { useEffect, useState } from "react";
 import { fetchWithCache, getCachedData } from "../api/cache";
 
 export default function Skills() {
-  const [skills, setSkills] = useState(() => getCachedData("/skills-new/") || []);
-  const [loading, setLoading] = useState(!skills.length);
+  const [categories, setCategories] = useState(() => getCachedData("/skills-categories/") || []);
+  const [loading, setLoading] = useState(!categories.length);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    fetchWithCache("/skills-new/", setSkills)
+    fetchWithCache("/skills-categories/", setCategories)
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  // Group skills by type
-  const groupedSkills = skills.reduce((acc, skill) => {
-    if (!acc[skill.skill_type]) acc[skill.skill_type] = [];
-    acc[skill.skill_type].push(skill);
-    return acc;
-  }, {});
-
-  const typeIcons = {
-    language: "💻",
-    framework: "⚡",
-    database: "🗄️",
-    tool: "🛠️",
-    other: "📦",
-  };
-
-  const typeLabels = {
-    language: "Programming Languages",
-    framework: "Frameworks & Libraries",
-    database: "Databases",
-    tool: "Tools & Platforms",
-    other: "Other Skills",
+  const getCategoryIcon = (name) => {
+    const lower = name.toLowerCase();
+    if (lower.includes("language")) return "💻";
+    if (lower.includes("framework") || lower.includes("library") || lower.includes("libraries")) return "⚡";
+    if (lower.includes("database") || lower.includes("sql") || lower.includes("storage")) return "🗄️";
+    if (lower.includes("tool") || lower.includes("platform") || lower.includes("devops") || lower.includes("cloud")) return "🛠️";
+    if (lower.includes("design") || lower.includes("ui") || lower.includes("ux")) return "🎨";
+    return "📦";
   };
 
   if (loading) {
@@ -48,6 +36,8 @@ export default function Skills() {
     );
   }
 
+  const visibleCategories = showAll ? categories : categories.slice(0, 3);
+
   return (
     <div className="card">
       <p className="section-title">Technical Expertise</p>
@@ -56,16 +46,16 @@ export default function Skills() {
       </h2>
 
       <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3 justify-items-stretch">
-        {Object.entries(groupedSkills).map(([type, typeSkills]) => (
-          <div key={type} className="flex flex-col">
+        {visibleCategories.map((category) => (
+          <div key={category.id || 'uncategorized'} className="flex flex-col">
             <div className="mb-4 flex items-center gap-3">
-              <span className="text-2xl">{typeIcons[type] || "📦"}</span>
+              <span className="text-2xl">{getCategoryIcon(category.name)}</span>
               <h3 className="text-base font-semibold text-surface-100">
-                {typeLabels[type] || "Other Skills"}
+                {category.name}
               </h3>
             </div>
             <div className="space-y-2 flex-1">
-              {typeSkills.map((skill) => (
+              {category.skills.map((skill) => (
                 <SkillRow key={skill.id} skill={skill} />
               ))}
             </div>
@@ -73,7 +63,18 @@ export default function Skills() {
         ))}
       </div>
 
-      {skills.length === 0 && (
+      {categories.length > 3 && (
+        <div className="mt-8 text-center">
+          <button
+            onClick={() => setShowAll(!showAll)}
+            className="px-6 py-2.5 rounded-lg border border-surface-700 bg-surface-800/50 text-sm font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
+          >
+            {showAll ? "See Less" : "See More"}
+          </button>
+        </div>
+      )}
+
+      {categories.length === 0 && (
         <div className="mt-8 text-center">
           <p className="text-surface-400">No skills added yet.</p>
         </div>

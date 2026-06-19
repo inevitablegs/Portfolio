@@ -83,6 +83,19 @@ class SkillStack(models.Model):
         return "Skills & Tech Stack"
 
 
+class SkillCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return self.name
+
+
 class Skill(models.Model):
     SKILL_TYPE_CHOICES = [
         ('language', 'Programming Language'),
@@ -93,10 +106,19 @@ class Skill(models.Model):
     ]
 
     name = models.CharField(max_length=100)
+    category = models.ForeignKey(
+        SkillCategory,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='skills'
+    )
     skill_type = models.CharField(
         max_length=20,
         choices=SKILL_TYPE_CHOICES,
-        default='other'
+        default='other',
+        blank=True,
+        null=True
     )
     proficiency = models.PositiveIntegerField(
         default=50,
@@ -111,7 +133,8 @@ class Skill(models.Model):
         ordering = ['order', '-proficiency', 'name']
 
     def __str__(self):
-        return f"{self.name} ({self.get_skill_type_display()}) - {self.proficiency}%"
+        cat_name = self.category.name if self.category else (self.get_skill_type_display() or 'No Category')
+        return f"{self.name} ({cat_name}) - {self.proficiency}%"
 
 # backend/api/models.py
 class Experience(models.Model):

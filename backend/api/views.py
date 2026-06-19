@@ -195,8 +195,8 @@ class ProjectAdminView(APIView):
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import SkillStack, Skill
-from .serializers import SkillStackSerializer, SkillSerializer
+from .models import SkillStack, Skill, SkillCategory
+from .serializers import SkillStackSerializer, SkillSerializer, SkillCategorySerializer
 
 class SkillStackPublicView(APIView):
     authentication_classes = []
@@ -216,6 +216,26 @@ class SkillPublicView(APIView):
     def get(self, request):
         skills = Skill.objects.all()
         return Response(SkillSerializer(skills, many=True).data)
+
+
+class SkillCategoryPublicView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        categories = SkillCategory.objects.all().order_by("order", "name")
+        data = SkillCategorySerializer(categories, many=True).data
+        
+        # Check for any uncategorized skills
+        uncategorized_skills = Skill.objects.filter(category__isnull=True).order_by('-proficiency', 'name')
+        if uncategorized_skills.exists():
+            data.append({
+                "id": None,
+                "name": "Other Skills",
+                "order": 9999,
+                "skills": SkillSerializer(uncategorized_skills, many=True).data
+            })
+        return Response(data)
 
 
 from rest_framework.permissions import IsAuthenticated
@@ -273,6 +293,31 @@ class SkillAdminView(APIView):
 
     def delete(self, request, pk):
         Skill.objects.filter(pk=pk).delete()
+        return Response({"deleted": True})
+
+
+class SkillCategoryAdminView(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+
+    def get(self, request):
+        categories = SkillCategory.objects.all().order_by("order", "name")
+        return Response(SkillCategorySerializer(categories, many=True).data)
+
+    def post(self, request):
+        serializer = SkillCategorySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=201)
+
+    def patch(self, request, pk):
+        category = SkillCategory.objects.get(pk=pk)
+        serializer = SkillCategorySerializer(category, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def delete(self, request, pk):
+        SkillCategory.objects.filter(pk=pk).delete()
         return Response({"deleted": True})
 
 
