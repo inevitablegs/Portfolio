@@ -8,6 +8,12 @@ export default function Certifications() {
   const scrollRef = useRef(null);
   const cardRefs = useRef([]);
 
+  // Drag state
+  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
+  const dragScrollLeft = useRef(0);
+  const hasDragged = useRef(false);
+
   useEffect(() => {
     fetchWithCache("/certifications/", setItems).catch(() => {});
   }, []);
@@ -41,16 +47,74 @@ export default function Certifications() {
     const container = scrollRef.current;
     if (!container) return;
     container.addEventListener("scroll", handleScroll, { passive: true });
-    // Run once on mount to set initial center
     handleScroll();
     return () => container.removeEventListener("scroll", handleScroll);
   }, [handleScroll, items]);
+
+  // Mouse wheel → horizontal scroll
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const onWheel = (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        container.scrollLeft += e.deltaY;
+      }
+    };
+    container.addEventListener("wheel", onWheel, { passive: false });
+    return () => container.removeEventListener("wheel", onWheel);
+  }, [items]);
+
+  // Click-and-drag to slide
+  const onMouseDown = (e) => {
+    const container = scrollRef.current;
+    if (!container) return;
+    isDragging.current = true;
+    hasDragged.current = false;
+    dragStartX.current = e.pageX - container.offsetLeft;
+    dragScrollLeft.current = container.scrollLeft;
+    container.style.scrollSnapType = "none";
+    container.style.scrollBehavior = "auto";
+    container.style.cursor = "grabbing";
+    container.style.userSelect = "none";
+  };
+
+  const onMouseMove = (e) => {
+    if (!isDragging.current) return;
+    e.preventDefault();
+    const container = scrollRef.current;
+    if (!container) return;
+    const x = e.pageX - container.offsetLeft;
+    const walk = (x - dragStartX.current) * 1.5;
+    if (Math.abs(walk) > 5) hasDragged.current = true;
+    container.scrollLeft = dragScrollLeft.current - walk;
+  };
+
+  const onMouseUp = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const container = scrollRef.current;
+    if (!container) return;
+    container.style.scrollSnapType = "";
+    container.style.scrollBehavior = "";
+    container.style.cursor = "";
+    container.style.userSelect = "";
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+    return () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    };
+  }, []);
 
   const scrollTo = (direction) => {
     const container = scrollRef.current;
     if (!container) return;
     const cardWidth = cardRefs.current[0]?.offsetWidth || 320;
-    const gap = 24; // matches gap-6
+    const gap = 24;
     container.scrollBy({
       left: direction === "left" ? -(cardWidth + gap) : cardWidth + gap,
       behavior: "smooth",
@@ -96,11 +160,13 @@ export default function Certifications() {
       {/* Scrollable row */}
       <div
         ref={scrollRef}
+        onMouseDown={onMouseDown}
         className="flex gap-6 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
           WebkitOverflowScrolling: "touch",
+          cursor: "grab",
         }}
       >
         {/* Left spacer for centering first card */}

@@ -464,6 +464,14 @@ class CertificationAdminView(APIView):
         Certification.objects.filter(pk=pk).delete()
         return Response({"deleted": True})
 
+    def put(self, request):
+        """Bulk reorder: expects { "order": [id1, id2, id3, ...] }"""
+        ordered_ids = request.data.get("order", [])
+        for index, cert_id in enumerate(ordered_ids):
+            Certification.objects.filter(pk=cert_id).update(order=index)
+        certs = Certification.objects.all().order_by("order")
+        return Response(CertificationSerializer(certs, many=True).data)
+
 # backend/api/views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
