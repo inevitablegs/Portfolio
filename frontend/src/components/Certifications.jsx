@@ -155,12 +155,30 @@ export default function Certifications() {
 
 import { forwardRef } from "react";
 
+const IMG_HEIGHT = 200; // fixed image area height
+const MIN_CARD_W = 260;
+const MAX_CARD_W = 520;
+const DEFAULT_CARD_W = 320;
+
 const CertCard = forwardRef(function CertCard({ cert, index, isCentered }, ref) {
+  const [cardWidth, setCardWidth] = useState(DEFAULT_CARD_W);
+
+  // When the image loads, compute width from its natural aspect ratio
+  const handleImageLoad = (e) => {
+    const { naturalWidth, naturalHeight } = e.target;
+    if (naturalWidth && naturalHeight) {
+      const aspect = naturalWidth / naturalHeight;
+      // width = height * aspect, then clamp
+      const computed = Math.round(IMG_HEIGHT * aspect);
+      setCardWidth(Math.max(MIN_CARD_W, Math.min(MAX_CARD_W, computed)));
+    }
+  };
+
   return (
     <div
       ref={ref}
       className={`
-        group relative flex-shrink-0 w-[320px] snap-center rounded-2xl border overflow-hidden
+        group relative flex-shrink-0 snap-center rounded-2xl border overflow-hidden
         transition-all duration-500 ease-out
         ${
           isCentered
@@ -168,7 +186,10 @@ const CertCard = forwardRef(function CertCard({ cert, index, isCentered }, ref) 
             : "border-surface-800/50 bg-surface-900/30 opacity-60 scale-95"
         }
       `}
-      style={{ animation: `fadeInUp 0.5s ease-out ${index * 0.08}s both` }}
+      style={{
+        width: `${cardWidth}px`,
+        animation: `fadeInUp 0.5s ease-out ${index * 0.08}s both`,
+      }}
     >
       {/* Accent top line */}
       <div
@@ -178,12 +199,16 @@ const CertCard = forwardRef(function CertCard({ cert, index, isCentered }, ref) 
       />
 
       {/* Certificate Image — Prominent */}
-      <div className="relative h-44 w-full bg-surface-950/40 flex items-center justify-center overflow-hidden">
+      <div
+        className="relative w-full bg-surface-950/40 flex items-center justify-center overflow-hidden"
+        style={{ height: `${IMG_HEIGHT}px` }}
+      >
         {cert.image ? (
           <img
             src={cert.image}
             alt={cert.name}
-            className={`max-h-full max-w-full object-contain p-5 transition-transform duration-700 ${
+            onLoad={handleImageLoad}
+            className={`max-h-full max-w-full object-contain p-4 transition-transform duration-700 ${
               isCentered ? "scale-100" : "scale-90"
             }`}
           />
