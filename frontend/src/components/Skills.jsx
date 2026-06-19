@@ -47,19 +47,11 @@ export default function Skills() {
 
       <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3 justify-items-stretch">
         {visibleCategories.map((category) => (
-          <div key={category.id || 'uncategorized'} className="flex flex-col">
-            <div className="mb-4 flex items-center gap-3">
-              <span className="text-2xl">{getCategoryIcon(category.name)}</span>
-              <h3 className="text-base font-semibold text-surface-100">
-                {category.name}
-              </h3>
-            </div>
-            <div className="space-y-2 flex-1">
-              {category.skills.map((skill) => (
-                <SkillRow key={skill.id} skill={skill} />
-              ))}
-            </div>
-          </div>
+          <CategoryGroup
+            key={category.id || 'uncategorized'}
+            category={category}
+            getCategoryIcon={getCategoryIcon}
+          />
         ))}
       </div>
 
@@ -78,6 +70,36 @@ export default function Skills() {
         <div className="mt-8 text-center">
           <p className="text-surface-400">No skills added yet.</p>
         </div>
+      )}
+    </div>
+  );
+}
+
+function CategoryGroup({ category, getCategoryIcon }) {
+  const [showAllSkills, setShowAllSkills] = useState(false);
+  const skills = category.skills || [];
+  const visibleSkills = showAllSkills ? skills : skills.slice(0, 4);
+
+  return (
+    <div className="flex flex-col">
+      <div className="mb-4 flex items-center gap-3">
+        <span className="text-2xl">{getCategoryIcon(category.name)}</span>
+        <h3 className="text-base font-semibold text-surface-100">
+          {category.name}
+        </h3>
+      </div>
+      <div className="space-y-2 flex-1">
+        {visibleSkills.map((skill) => (
+          <SkillRow key={skill.id} skill={skill} />
+        ))}
+      </div>
+      {skills.length > 4 && (
+        <button
+          onClick={() => setShowAllSkills(!showAllSkills)}
+          className="mt-3 inline-flex items-center gap-1.5 self-start text-xs font-semibold text-accent-400 hover:text-accent-300 transition-colors bg-surface-800/30 hover:bg-surface-800/70 border border-surface-700/50 hover:border-accent-500/30 px-3 py-1.5 rounded-lg shadow-sm"
+        >
+          {showAllSkills ? "See Less" : `See More (+${skills.length - 4})`}
+        </button>
       )}
     </div>
   );
