@@ -5,7 +5,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default function Projects() {
   const [projects, setProjects] = useState(() => getCachedData("/projects/") || []);
   const [loading, setLoading] = useState(!projects.length);
-  const [showAll, setShowAll] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(2);
 
   useEffect(() => {
     fetchWithCache("/projects/", setProjects)
@@ -13,8 +13,9 @@ export default function Projects() {
       .finally(() => setLoading(false));
   }, []);
 
-  const displayedProjects = showAll ? projects : projects.slice(0, 2);
-  const hasMore = projects.length > 2;
+  const displayedProjects = projects.slice(0, visibleCount);
+  const showSeeMore = visibleCount < projects.length;
+  const showSeeLess = visibleCount > 2;
 
   return (
     <div className="card">
@@ -44,15 +45,26 @@ export default function Projects() {
             ))}
           </div>
           
-          {hasMore && !showAll && (
-            <div className="mt-8 flex justify-center">
-              <button
-                onClick={() => setShowAll(true)}
-                className="group flex items-center gap-2 rounded-lg border border-accent-500/30 bg-accent-500/10 px-6 py-3 text-sm font-semibold text-accent-400 transition-all duration-300 hover:border-accent-500/50 hover:bg-accent-500/20 hover:shadow-glow-sm hover:scale-105"
-              >
-                See More Projects
-                <span className="transition-transform duration-300 group-hover:translate-y-1">↓</span>
-              </button>
+          {(showSeeMore || showSeeLess) && (
+            <div className="mt-8 flex justify-center gap-4">
+              {showSeeLess && (
+                <button
+                  onClick={() => setVisibleCount(2)}
+                  className="group flex items-center gap-2 rounded-lg border border-surface-700 bg-surface-800/50 px-6 py-3 text-sm font-semibold text-surface-300 transition-all duration-300 hover:border-accent-500/50 hover:text-accent-400 hover:scale-105"
+                >
+                  <span>↑</span>
+                  See Less
+                </button>
+              )}
+              {showSeeMore && (
+                <button
+                  onClick={() => setVisibleCount(prev => Math.min(prev + 2, projects.length))}
+                  className="group flex items-center gap-2 rounded-lg border border-accent-500/30 bg-accent-500/10 px-6 py-3 text-sm font-semibold text-accent-400 transition-all duration-300 hover:border-accent-500/50 hover:bg-accent-500/20 hover:shadow-glow-sm hover:scale-105"
+                >
+                  See More Projects
+                  <span className="transition-transform duration-300 group-hover:translate-y-1">↓</span>
+                </button>
+              )}
             </div>
           )}
         </>

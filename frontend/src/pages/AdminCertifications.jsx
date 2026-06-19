@@ -192,28 +192,43 @@ function CertCard({ item, isEditing, editData, imagePreview, onEdit, onDelete, o
   }
 
   return (
-    <div className="group relative rounded-xl border border-surface-800/50 bg-surface-900/50 overflow-hidden backdrop-blur-xl">
-      <div className="relative h-32 bg-surface-900/50 flex items-center justify-center">
+    <div className="group relative flex items-center gap-4 rounded-2xl border border-surface-800/80 bg-surface-900/30 p-4 backdrop-blur-md transition-all duration-300 hover:border-accent-500/40 hover:bg-surface-900/50">
+      <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-surface-800 bg-surface-950/60 flex items-center justify-center p-2">
         {item.image ? (
           <img
             src={item.image}
             alt={item.name}
-            className="h-full w-full object-contain p-4"
+            className="h-full w-full object-contain"
           />
         ) : (
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-500/20 text-3xl">
-            📜
+          <div className="text-2xl">
+            🎓
           </div>
         )}
       </div>
 
-      <div className="p-4">
-        <h3 className="text-sm font-bold text-surface-100 line-clamp-2 min-h-[2.5rem]">{item.name}</h3>
-        <p className="mt-1 text-xs text-surface-400">{item.issuer}</p>
+      <div className="flex-1 min-w-0">
+        <span className="inline-flex items-center rounded-md border border-accent-500/20 bg-accent-500/5 px-2 py-0.5 text-[10px] font-bold text-accent-400 uppercase tracking-wider mb-1">
+          {item.issuer}
+        </span>
+        
+        <h3 className="text-sm font-bold text-surface-100 leading-snug line-clamp-2">
+          {item.name}
+        </h3>
 
-        <div className="mt-4 flex gap-2">
-          <button onClick={() => onEdit(item)} className="flex-1 rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-1.5 text-xs font-semibold text-surface-300">Edit</button>
-          <button onClick={() => onDelete(item.id)} className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-400">Delete</button>
+        <div className="mt-3 flex gap-2">
+          <button
+            onClick={() => onEdit(item)}
+            className="rounded-lg border border-surface-700 bg-surface-800/50 px-3 py-1.5 text-xs font-semibold text-surface-300 transition hover:border-accent-500/50 hover:text-accent-400"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => onDelete(item.id)}
+            className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-400 transition hover:border-red-500/50"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>

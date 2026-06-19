@@ -152,7 +152,6 @@ class Experience(models.Model):
 class Achievement(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-
     order = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -162,21 +161,16 @@ class Certification(models.Model):
     name = models.CharField(max_length=200)
     issuer = models.CharField(max_length=150)
     certificate_url = models.URLField(blank=True)
-    
-    image = models.ImageField(
-        upload_to="certificates/",
+    image = CloudinaryField(
+        "image",
         blank=True,
         null=True,
         help_text="Certificate badge or logo"
     )
-
     order = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
-
-from django.db import models
-from cloudinary.models import CloudinaryField
 
 class ProfileAssets(models.Model):
     resume = CloudinaryField(
